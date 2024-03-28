@@ -115,12 +115,21 @@ const Sidebar = () => {
               Projects
             </Typography>
             <Item
-              title="Add Project"
+              title="Add New Project"
               to="/newproject"
               icon={<ReceiptOutlinedIcon />}
               selected={selected}
               setSelected={setSelected}
             />
+
+            <Item
+              title="Project"
+              to="/project"
+              icon={<ReceiptOutlinedIcon />}
+              selected={selected}
+              setSelected={setSelected}
+            />
+
             <Item
               title="Line Chart"
               to="/line"
