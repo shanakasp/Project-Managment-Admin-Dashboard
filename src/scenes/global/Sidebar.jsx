@@ -115,8 +115,8 @@ const Sidebar = () => {
               Projects
             </Typography>
             <Item
-              title="Invoices Balances"
-              to="/invoices"
+              title="Add Project"
+              to="/newproject"
               icon={<ReceiptOutlinedIcon />}
               selected={selected}
               setSelected={setSelected}

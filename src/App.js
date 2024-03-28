@@ -1,6 +1,7 @@
 import { CssBaseline, ThemeProvider } from "@mui/material";
 import { useState } from "react";
 import { Route, Routes } from "react-router-dom";
+import AddProject from "./scenes/addProject/index";
 import Bar from "./scenes/bar";
 import Calendar from "./scenes/calendar/calendar";
 import Contacts from "./scenes/contacts";
@@ -39,6 +40,7 @@ function App() {
               <Route path="/faq" element={<FAQ />} />
               <Route path="/calendar" element={<Calendar />} />
               <Route path="/geography" element={<Geography />} />
+              <Route path="/newproject" element={<AddProject />} />
             </Routes>
           </main>
         </div>
