@@ -12,6 +12,8 @@ import Sidebar from "./scenes/global/Sidebar";
 import Topbar from "./scenes/global/Topbar";
 import Line from "./scenes/line";
 import Pie from "./scenes/pie";
+import AddProject from "./scenes/projects/addProject/index.jsx";
+import Project from "./scenes/projects/projects/index.jsx";
 import Team from "./scenes/team";
 import { ColorModeContext, useMode } from "./theme";
 
@@ -39,6 +41,8 @@ function App() {
               <Route path="/faq" element={<FAQ />} />
               <Route path="/calendar" element={<Calendar />} />
               <Route path="/geography" element={<Geography />} />
+              <Route path="/newproject" element={<AddProject />} />
+              <Route path="/project" element={<Project />} />
             </Routes>
           </main>
         </div>
