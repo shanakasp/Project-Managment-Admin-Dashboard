@@ -13,6 +13,7 @@ import Topbar from "./scenes/global/Topbar";
 import Line from "./scenes/line";
 import Pie from "./scenes/pie";
 import AddProject from "./scenes/projects/addProject/index.jsx";
+import Edit from "./scenes/projects/projects/Edit.jsx";
 import ViewProject from "./scenes/projects/projects/ViewProject.jsx";
 import Project from "./scenes/projects/projects/index.jsx";
 import Team from "./scenes/team";
@@ -48,6 +49,7 @@ function App() {
                 path="/project/viewproject/:id"
                 element={<ViewProject></ViewProject>}
               />
+              <Route path="/project/editproject/:id" element={<Edit></Edit>} />
             </Routes>
           </main>
         </div>
