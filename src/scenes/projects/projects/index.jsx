@@ -1,7 +1,17 @@
-import { DeleteOutline, Edit, Visibility } from "@mui/icons-material";
-import { Box, IconButton, MenuItem, Select, useTheme } from "@mui/material";
+import DeleteIcon from "@mui/icons-material/Delete"; // Import DeleteIcon
+import EditIcon from "@mui/icons-material/Edit";
+import VisibilityIcon from "@mui/icons-material/Visibility";
+import {
+  Box,
+  IconButton,
+  MenuItem,
+  Select,
+  Tooltip,
+  useTheme,
+} from "@mui/material";
 import { DataGrid, GridToolbar } from "@mui/x-data-grid";
 import React from "react";
+import { Link } from "react-router-dom";
 import Header from "../../../components/Header";
 import { mockDataContacts } from "../../../data/mockData";
 import { tokens } from "../../../theme";
@@ -76,21 +86,34 @@ const Contacts = () => {
       ),
     },
     {
-      field: "actions",
       headerName: "Actions",
-      flex: 1,
+      flex: 0.6,
       renderCell: (params) => (
-        <>
-          <IconButton onClick={() => handleViewClick(params.id)}>
-            <Visibility />
-          </IconButton>
-          <IconButton onClick={() => handleEditClick(params.id)}>
-            <Edit />
-          </IconButton>
-          <IconButton onClick={() => handleDeleteClick(params.id)}>
-            <DeleteOutline />
-          </IconButton>
-        </>
+        <Box>
+          <Tooltip title="View">
+            <Link to={`/project/viewproject/${params.row.id}`}>
+              <IconButton
+                onClick={() => handleViewClick(params.row.id, params.row.role)}
+              >
+                <VisibilityIcon />
+              </IconButton>
+            </Link>
+          </Tooltip>
+          <Tooltip title="Edit">
+            <Link to={`/project/editproject/${params.row.id}`}>
+              <IconButton
+                onClick={() => handleEditClick(params.row.id, params.row.role)}
+              >
+                <EditIcon />
+              </IconButton>
+            </Link>
+          </Tooltip>
+          <Tooltip title="Delete">
+            <IconButton onClick={() => handleDeleteClick(params.row.id)}>
+              <DeleteIcon />
+            </IconButton>
+          </Tooltip>
+        </Box>
       ),
     },
   ];
