@@ -1,5 +1,17 @@
-import { Box, useTheme } from "@mui/material";
+import DeleteIcon from "@mui/icons-material/Delete"; // Import DeleteIcon
+import EditIcon from "@mui/icons-material/Edit";
+import VisibilityIcon from "@mui/icons-material/Visibility";
+import {
+  Box,
+  IconButton,
+  MenuItem,
+  Select,
+  Tooltip,
+  useTheme,
+} from "@mui/material";
 import { DataGrid, GridToolbar } from "@mui/x-data-grid";
+import React from "react";
+import { Link } from "react-router-dom";
 import Header from "../../../components/Header";
 import { mockDataContacts } from "../../../data/mockData";
 import { tokens } from "../../../theme";
@@ -8,46 +20,101 @@ const Contacts = () => {
   const theme = useTheme();
   const colors = tokens(theme.palette.mode);
 
+  const handleCategoryChange = (event, id) => {
+    // Handle category change logic here
+    console.log(
+      "Category changed for row with ID:",
+      id,
+      "New value:",
+      event.target.value
+    );
+  };
+
+  const handleViewClick = (id) => {
+    // Handle view button click logic here
+    console.log("View button clicked for row with ID:", id);
+  };
+
+  const handleEditClick = (id) => {
+    // Handle edit button click logic here
+    console.log("Edit button clicked for row with ID:", id);
+  };
+
+  const handleDeleteClick = (id) => {
+    // Handle delete button click logic here
+    console.log("Delete button clicked for row with ID:", id);
+  };
+
   const columns = [
-    { field: "id", headerName: "ID", flex: 0.5 },
-    { field: "registrarId", headerName: "Registrar ID" },
+    { field: "id", headerName: "Project ID", flex: 0.5 },
+
     {
       field: "name",
-      headerName: "Name",
-      flex: 1,
+      headerName: "Project Title",
+      flex: 1.2,
       cellClassName: "name-column--cell",
     },
     {
       field: "age",
-      headerName: "Age",
+      headerName: "Start Date",
       type: "number",
+      flex: 1,
       headerAlign: "left",
       align: "left",
     },
     {
-      field: "phone",
-      headerName: "Phone Number",
-      flex: 1,
-    },
-    {
-      field: "email",
-      headerName: "Email",
-      flex: 1,
-    },
-    {
-      field: "address",
-      headerName: "Address",
-      flex: 1,
-    },
-    {
-      field: "city",
-      headerName: "City",
-      flex: 1,
-    },
-    {
       field: "zipCode",
-      headerName: "Zip Code",
+      headerName: "End Date",
+      type: "number",
       flex: 1,
+      headerAlign: "left",
+      align: "left",
+    },
+    {
+      field: "category",
+      headerName: "Category",
+      flex: 1,
+      renderCell: (params) => (
+        <Select
+          value={params.value}
+          onChange={(event) => handleCategoryChange(event, params.id)}
+        >
+          <MenuItem value="Pending">Pending</MenuItem>
+          <MenuItem value="Developing">Developing</MenuItem>
+          <MenuItem value="Completed">Completed</MenuItem>
+        </Select>
+      ),
+    },
+    {
+      headerName: "Actions",
+      flex: 0.6,
+      renderCell: (params) => (
+        <Box>
+          <Tooltip title="View">
+            <Link to={`/project/viewproject/${params.row.id}`}>
+              <IconButton
+                onClick={() => handleViewClick(params.row.id, params.row.role)}
+              >
+                <VisibilityIcon />
+              </IconButton>
+            </Link>
+          </Tooltip>
+          <Tooltip title="Edit">
+            <Link to={`/project/editproject/${params.row.id}`}>
+              <IconButton
+                onClick={() => handleEditClick(params.row.id, params.row.role)}
+              >
+                <EditIcon />
+              </IconButton>
+            </Link>
+          </Tooltip>
+          <Tooltip title="Delete">
+            <IconButton onClick={() => handleDeleteClick(params.row.id)}>
+              <DeleteIcon />
+            </IconButton>
+          </Tooltip>
+        </Box>
+      ),
     },
   ];
 
@@ -89,6 +156,7 @@ const Contacts = () => {
         <DataGrid
           rows={mockDataContacts}
           columns={columns}
+          sx={{ fontSize: "15px" }}
           components={{ Toolbar: GridToolbar }}
         />
       </Box>
