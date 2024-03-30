@@ -25,6 +25,7 @@ import Edit from "./scenes/projects/projects/Edit.jsx";
 import ViewProject from "./scenes/projects/projects/ViewProject.jsx";
 import Project from "./scenes/projects/projects/index.jsx";
 import Team from "./scenes/team";
+import Signup from "./scenes/auth/signup/Signup.jsx"
 import { ColorModeContext, useMode } from "./theme";
 
 function App() {
@@ -80,6 +81,8 @@ function App() {
                 path="/employee/editemployee/:id"
                 element={<EditEmployee />}
               />
+
+<Route path="/signup" element={<Signup />} />
             </Routes>
           </main>
         </div>
