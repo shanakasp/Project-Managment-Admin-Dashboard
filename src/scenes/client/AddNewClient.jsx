@@ -1,5 +1,12 @@
 import ImageIcon from "@mui/icons-material/Image";
-import { Box, Button, MenuItem, TextField, Typography ,Select } from "@mui/material";
+import {
+  Box,
+  Button,
+  MenuItem,
+  Select,
+  TextField,
+  Typography,
+} from "@mui/material";
 import useMediaQuery from "@mui/material/useMediaQuery";
 import { Formik } from "formik";
 import { useState } from "react";
@@ -16,7 +23,6 @@ const Form = () => {
     const file = event.currentTarget.files[0];
     setFieldValue("image", file);
 
-    // Preview the image
     if (file) {
       const reader = new FileReader();
       reader.onloadend = () => {
@@ -147,8 +153,7 @@ const Form = () => {
                   ))}
                 </Select>
               </Box>
-              <Box display="flex" alignItems="center">
-                <Typography>Select Company Logo</Typography>
+              <Box sx={{ gridColumn: "span 2", marginLeft: "54%" }}>
                 <label htmlFor="image-upload">
                   <input
                     id="image-upload"
@@ -164,7 +169,7 @@ const Form = () => {
                     component="span"
                     startIcon={<ImageIcon />}
                   >
-                    Upload Logo
+                    Select Comapny Logo
                   </Button>
                 </label>
               </Box>
