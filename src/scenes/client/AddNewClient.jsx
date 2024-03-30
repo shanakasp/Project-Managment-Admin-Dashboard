@@ -6,6 +6,7 @@ import {
   Select,
   TextField,
   Typography,
+  useTheme,
 } from "@mui/material";
 import useMediaQuery from "@mui/material/useMediaQuery";
 import { Formik } from "formik";
@@ -13,7 +14,11 @@ import { useState } from "react";
 import * as yup from "yup";
 import Header from "../../components/Header";
 import { countries } from "../../data/country";
+import { tokens } from "../../theme";
 const Form = () => {
+  const theme = useTheme();
+  const colors = tokens(theme.palette.mode);
+
   const isNonMobile = useMediaQuery("(min-width:600px)");
   const [selectedStartDate, setSelectedStartDate] = useState(null);
   const [selectedEndDate, setSelectedEndDate] = useState(null);
@@ -83,8 +88,6 @@ const Form = () => {
                 "& > div": { gridColumn: isNonMobile ? undefined : "span 4" },
               }}
             >
-              {" "}
-              <Box></Box>
               <TextField
                 fullWidth
                 variant="filled"
@@ -170,9 +173,10 @@ const Form = () => {
                   <Button
                     variant="contained"
                     component="span"
+                    color="secondary"
                     startIcon={<ImageIcon />}
                   >
-                    Select Comapny Logo
+                    Select Company Logo
                   </Button>
                 </label>
               </Box>
