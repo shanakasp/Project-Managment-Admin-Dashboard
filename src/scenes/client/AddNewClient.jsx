@@ -1,29 +1,38 @@
-import {
-  Box,
-  Button,
-  MenuItem,
-  Select,
-  TextField,
-  Typography,
-} from "@mui/material";
+import ImageIcon from "@mui/icons-material/Image";
+import { Box, Button, MenuItem, TextField, Typography ,Select } from "@mui/material";
 import useMediaQuery from "@mui/material/useMediaQuery";
 import { Formik } from "formik";
 import { useState } from "react";
 import * as yup from "yup";
 import Header from "../../components/Header";
 import { countries } from "../../data/country";
-
 const Form = () => {
   const isNonMobile = useMediaQuery("(min-width:600px)");
   const [selectedStartDate, setSelectedStartDate] = useState(null);
   const [selectedEndDate, setSelectedEndDate] = useState(null);
+  const [previewImage, setPreviewImage] = useState(null);
 
+  const handleImageChange = (event, setFieldValue) => {
+    const file = event.currentTarget.files[0];
+    setFieldValue("image", file);
+
+    // Preview the image
+    if (file) {
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        setPreviewImage(reader.result);
+      };
+      reader.readAsDataURL(file);
+    } else {
+      setPreviewImage(null);
+    }
+  };
   const handleFormSubmit = (values) => {
     console.log(values);
 
     const formData = new FormData();
     formData.append("name", values.name);
-    formData.append("country", values.country); // Include the selected country in form data
+    formData.append("country", values.country);
     formData.append("description", values.description);
     formData.append("add_date", values.add_date);
     formData.append("other", values.other);
@@ -65,10 +74,12 @@ const Form = () => {
                 "& > div": { gridColumn: isNonMobile ? undefined : "span 4" },
               }}
             >
+              {" "}
+              <Box></Box>
               <TextField
                 fullWidth
                 variant="filled"
-                label="Title of the Project"
+                label="Name of the Client"
                 onBlur={handleBlur}
                 onChange={handleChange}
                 value={values.name}
@@ -77,28 +88,6 @@ const Form = () => {
                 helperText={touched.name && errors.name}
                 sx={{ gridColumn: "span 4" }}
               />
-              <Box>
-                <Typography>Country</Typography>{" "}
-                <Select
-                  value={values.country}
-                  onChange={handleChange}
-                  onBlur={handleBlur}
-                  label="Select a country"
-                  name="country"
-                  error={!!touched.country && !!errors.country}
-                  helperText={touched.country && errors.country}
-                >
-                  {countries.map((countryObj) => (
-                    <MenuItem
-                      key={countryObj.country}
-                      value={countryObj.country}
-                    >
-                      {countryObj.country}
-                    </MenuItem>
-                  ))}
-                </Select>
-              </Box>
-
               <TextField
                 fullWidth
                 multiline
@@ -135,21 +124,61 @@ const Form = () => {
                 onChange={handleChange}
                 value={values.other}
                 name="other"
-                error={!!touched.other && !!errors.other}
-                helperText={touched.other && errors.other}
                 sx={{ gridColumn: "span 2" }}
               />
-              <input
-                type="file"
-                onChange={(event) =>
-                  setFieldValue("image", event.currentTarget.files[0])
-                }
-                sx={{ gridColumn: "span 4" }}
-              />
+              <Box>
+                <Typography>Country</Typography>{" "}
+                <Select
+                  value={values.country}
+                  onChange={handleChange}
+                  onBlur={handleBlur}
+                  label="Select a country"
+                  name="country"
+                  error={!!touched.country && !!errors.country}
+                  helperText={touched.country && errors.country}
+                >
+                  {countries.map((countryObj) => (
+                    <MenuItem
+                      key={countryObj.country}
+                      value={countryObj.country}
+                    >
+                      {countryObj.country}
+                    </MenuItem>
+                  ))}
+                </Select>
+              </Box>
+              <Box display="flex" alignItems="center">
+                <Typography>Select Company Logo</Typography>
+                <label htmlFor="image-upload">
+                  <input
+                    id="image-upload"
+                    type="file"
+                    accept="image/*"
+                    onChange={(event) =>
+                      handleImageChange(event, setFieldValue)
+                    }
+                    style={{ display: "none" }}
+                  />
+                  <Button
+                    variant="contained"
+                    component="span"
+                    startIcon={<ImageIcon />}
+                  >
+                    Upload Logo
+                  </Button>
+                </label>
+              </Box>
+              {previewImage && (
+                <img
+                  src={previewImage}
+                  alt="Preview"
+                  style={{ width: 100, height: 100 }}
+                />
+              )}
             </Box>
             <Box display="flex" justifyContent="end" mt="20px">
               <Button type="submit" color="secondary" variant="contained">
-                Create New Project
+                Create New Client
               </Button>
             </Box>
           </form>
