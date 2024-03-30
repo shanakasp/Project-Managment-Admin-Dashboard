@@ -47,6 +47,9 @@ const Form = () => {
     fetch("http://hitprojback.hasthiya.org/api/HIT/client", {
       method: "POST",
       body: formData,
+      headers: {
+        "Content-Type": "application/json",
+      },
     })
       .then((response) => response.json())
       .then((data) => console.log(data))
