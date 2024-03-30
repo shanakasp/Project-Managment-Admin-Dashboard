@@ -75,7 +75,7 @@ const Viewclient = () => {
           </Typography>
         </AccordionSummary>
         <AccordionDetails>
-          <Typography>Image: Sample image details go here.</Typography>
+          <Typography>Image: Sample image details goes here.</Typography>
         </AccordionDetails>
       </Accordion>
     </Box>
