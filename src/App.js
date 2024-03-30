@@ -9,6 +9,10 @@ import EditClientInformation from "./scenes/client/clientInformation/EditClient.
 import ViewClientInformation from "./scenes/client/clientInformation/ViewClient.jsx";
 import Contacts from "./scenes/contacts";
 import Dashboard from "./scenes/dashboard";
+import AddNewEmployee from "./scenes/employee/AddNewEmployee.jsx";
+import EditEmployee from "./scenes/employee/employeeInformation/EditEmployee.jsx";
+import ViewEmployee from "./scenes/employee/employeeInformation/ViewEmployee.jsx";
+import Employee from "./scenes/employee/employeeInformation/index.jsx";
 import FAQ from "./scenes/faq";
 import Form from "./scenes/form";
 import Geography from "./scenes/geography";
@@ -64,6 +68,17 @@ function App() {
               <Route
                 path="/client/editclient/:id"
                 element={<EditClientInformation />}
+              />
+
+              <Route path="/addemployee" element={<AddNewEmployee />} />
+              <Route path="/employee" element={<Employee />} />
+              <Route
+                path="/employee/viewemployee/:id"
+                element={<ViewEmployee />}
+              />
+              <Route
+                path="/employee/editemployee/:id"
+                element={<EditEmployee />}
               />
             </Routes>
           </main>
