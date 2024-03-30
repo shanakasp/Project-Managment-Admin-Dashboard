@@ -16,7 +16,7 @@ import Header from "../../../components/Header";
 import { mockDataContacts } from "../../../data/mockData";
 import { tokens } from "../../../theme";
 
-const Project = () => {
+const Client = () => {
   const theme = useTheme();
   const colors = tokens(theme.palette.mode);
 
@@ -164,4 +164,4 @@ const Project = () => {
   );
 };
 
-export default Project;
+export default Client;
