@@ -103,7 +103,7 @@ const EditProjectDetails = () => {
           />
         )}
         <Box display="flex" justifyContent="end" mb="20px">
-          <Button type="submit" color="primary" variant="contained">
+          <Button type="submit" color="secondary" variant="contained">
             Update Project Details
           </Button>
         </Box>

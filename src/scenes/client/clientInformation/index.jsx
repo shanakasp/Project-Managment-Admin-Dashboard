@@ -1,14 +1,7 @@
 import DeleteIcon from "@mui/icons-material/Delete"; // Import DeleteIcon
 import EditIcon from "@mui/icons-material/Edit";
 import VisibilityIcon from "@mui/icons-material/Visibility";
-import {
-  Box,
-  IconButton,
-  MenuItem,
-  Select,
-  Tooltip,
-  useTheme,
-} from "@mui/material";
+import { Box, IconButton, Tooltip, useTheme } from "@mui/material";
 import { DataGrid, GridToolbar } from "@mui/x-data-grid";
 import React from "react";
 import { Link } from "react-router-dom";
@@ -46,52 +39,35 @@ const Client = () => {
   };
 
   const columns = [
-    { field: "id", headerName: "Project ID", flex: 0.5 },
+    { field: "id", headerName: "Client ID", flex: 0.5 },
 
     {
       field: "name",
-      headerName: "Project Title",
+      headerName: "Client Name",
       flex: 1.2,
       cellClassName: "name-column--cell",
     },
     {
       field: "age",
-      headerName: "Start Date",
+      headerName: "Added Date",
       type: "number",
       flex: 1,
       headerAlign: "left",
       align: "left",
     },
     {
-      field: "zipCode",
-      headerName: "End Date",
-      type: "number",
-      flex: 1,
-      headerAlign: "left",
-      align: "left",
+      field: "city",
+      headerName: "Country",
+      flex: 1.2,
     },
-    {
-      field: "category",
-      headerName: "Category",
-      flex: 1,
-      renderCell: (params) => (
-        <Select
-          value={params.value}
-          onChange={(event) => handleCategoryChange(event, params.id)}
-        >
-          <MenuItem value="Pending">Pending</MenuItem>
-          <MenuItem value="Developing">Developing</MenuItem>
-          <MenuItem value="Completed">Completed</MenuItem>
-        </Select>
-      ),
-    },
+
     {
       headerName: "Actions",
       flex: 0.6,
       renderCell: (params) => (
         <Box>
           <Tooltip title="View">
-            <Link to={`/project/viewproject/${params.row.id}`}>
+            <Link to={`/client/viewclient/${params.row.id}`}>
               <IconButton
                 onClick={() => handleViewClick(params.row.id, params.row.role)}
               >
@@ -100,7 +76,7 @@ const Client = () => {
             </Link>
           </Tooltip>
           <Tooltip title="Edit">
-            <Link to={`/project/editproject/${params.row.id}`}>
+            <Link to={`/client/editclient/${params.row.id}`}>
               <IconButton
                 onClick={() => handleEditClick(params.row.id, params.row.role)}
               >
@@ -120,9 +96,9 @@ const Client = () => {
 
   return (
     <Box m="20px">
-      <Header title="PROJECTS" subtitle="List of All the Projects" />
+      <Header title="CLIENTS" subtitle="List of All the Clients" />
       <Box
-        m="10px 0 0 0"
+        m="0 0 0 0"
         height="70vh"
         sx={{
           "& .MuiDataGrid-root": {

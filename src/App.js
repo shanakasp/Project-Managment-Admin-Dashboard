@@ -4,6 +4,9 @@ import { Route, Routes } from "react-router-dom";
 import Bar from "./scenes/bar";
 import Calendar from "./scenes/calendar/calendar";
 import AddNewClient from "./scenes/client/AddNewClient";
+import ClientInformation from "./scenes/client/clientInformation";
+import EditClientInformation from "./scenes/client/clientInformation/EditClient.jsx";
+import ViewClientInformation from "./scenes/client/clientInformation/ViewClient.jsx";
 import Contacts from "./scenes/contacts";
 import Dashboard from "./scenes/dashboard";
 import FAQ from "./scenes/faq";
@@ -53,6 +56,15 @@ function App() {
               <Route path="/project/editproject/:id" element={<Edit></Edit>} />
 
               <Route path="/addclient" element={<AddNewClient />} />
+              <Route path="/client" element={<ClientInformation />} />
+              <Route
+                path="/client/viewclient/:id"
+                element={<ViewClientInformation />}
+              />
+              <Route
+                path="/client/editclient/:id"
+                element={<EditClientInformation />}
+              />
             </Routes>
           </main>
         </div>
