@@ -47,7 +47,7 @@ export default function SignInSide() {
 
   return (
     <ThemeProvider theme={defaultTheme}>
-      <Grid container component="main" sx={{ height: "100vh" }}>
+      <Grid container component="main" sx={{ m: "-8%", zIndex: 1, pl: "90px" }}>
         <CssBaseline />
         <Grid
           item
@@ -55,6 +55,9 @@ export default function SignInSide() {
           sm={4}
           md={7}
           sx={{
+            position: "relative", // Ensure relative positioning
+            zIndex: 1, // Higher z-index to appear above other elements
+            m: "-2%",
             backgroundImage:
               "url(https://source.unsplash.com/random?wallpapers)",
             backgroundRepeat: "no-repeat",
@@ -74,6 +77,8 @@ export default function SignInSide() {
               display: "flex",
               flexDirection: "column",
               alignItems: "center",
+              position: "relative", // Ensure relative positioning
+              zIndex: 2, // Lower z-index to appear below other elements
             }}
           >
             <Avatar sx={{ m: 1, bgcolor: "secondary.main" }}>
