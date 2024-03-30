@@ -3,6 +3,7 @@ import { useState } from "react";
 import { Route, Routes } from "react-router-dom";
 import Bar from "./scenes/bar";
 import Calendar from "./scenes/calendar/calendar";
+import AddNewClient from "./scenes/client/AddNewClient";
 import Contacts from "./scenes/contacts";
 import Dashboard from "./scenes/dashboard";
 import FAQ from "./scenes/faq";
@@ -50,6 +51,8 @@ function App() {
                 element={<ViewProject></ViewProject>}
               />
               <Route path="/project/editproject/:id" element={<Edit></Edit>} />
+
+              <Route path="/addclient" element={<AddNewClient />} />
             </Routes>
           </main>
         </div>
