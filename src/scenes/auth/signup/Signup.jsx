@@ -57,7 +57,7 @@ export default function SignInSide() {
           sx={{
             position: "relative", // Ensure relative positioning
             zIndex: 1, // Higher z-index to appear above other elements
-            m: "-2%",
+
             backgroundImage:
               "url(https://source.unsplash.com/random?wallpapers)",
             backgroundRepeat: "no-repeat",
@@ -73,6 +73,7 @@ export default function SignInSide() {
           <Box
             sx={{
               my: 8,
+              mr: "250px",
               mx: 4,
               display: "flex",
               flexDirection: "column",
