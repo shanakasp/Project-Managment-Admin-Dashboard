@@ -77,7 +77,7 @@ export default function SignInSide() {
             <Avatar sx={{ m: 1, bgcolor: "secondary.main" }}>
               <LockOutlinedIcon />
             </Avatar>
-            <h1>Hasthiya IT Admin Dashboard</h1> <br></br>
+            <h1>Hasthiya IT Admin Dashboard</h1>
             <Typography component="h1" variant="h5">
               Sign in
             </Typography>
