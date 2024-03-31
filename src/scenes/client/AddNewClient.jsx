@@ -189,8 +189,13 @@ const Form = () => {
               )}
             </Box>
             <Box display="flex" justifyContent="end" mt="20px">
-              <Button type="submit" color="secondary" variant="contained">
-                Create New Client
+              <Button
+                type="submit"
+                color="secondary"
+                variant="contained"
+                size="large"
+              >
+                <strong>Create New Client</strong>
               </Button>
             </Box>
           </form>

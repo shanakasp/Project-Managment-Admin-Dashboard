@@ -1,10 +1,12 @@
-import CalendarTodayOutlinedIcon from "@mui/icons-material/CalendarTodayOutlined";
-import ContactsOutlinedIcon from "@mui/icons-material/ContactsOutlined";
+import AddCircleOutlineIcon from "@mui/icons-material/AddCircleOutline";
+import EventNoteOutlinedIcon from "@mui/icons-material/EventNoteOutlined";
+import FolderOutlinedIcon from "@mui/icons-material/FolderOutlined";
+import GroupAddOutlinedIcon from "@mui/icons-material/GroupAddOutlined";
+import GroupOutlinedIcon from "@mui/icons-material/GroupOutlined";
 import HomeOutlinedIcon from "@mui/icons-material/HomeOutlined";
 import MenuOutlinedIcon from "@mui/icons-material/MenuOutlined";
-import PeopleOutlinedIcon from "@mui/icons-material/PeopleOutlined";
-import PersonOutlinedIcon from "@mui/icons-material/PersonOutlined";
-import ReceiptOutlinedIcon from "@mui/icons-material/ReceiptOutlined";
+import PeopleOutlineIcon from "@mui/icons-material/PeopleOutline";
+import PersonAddOutlinedIcon from "@mui/icons-material/PersonAddOutlined";
 import { Box, IconButton, Typography, useTheme } from "@mui/material";
 import { useState } from "react";
 import { Menu, MenuItem, ProSidebar } from "react-pro-sidebar";
@@ -74,7 +76,11 @@ const Sidebar = () => {
                 alignItems="center"
                 ml="15px"
               >
-                <Typography variant="h3" color={colors.grey[100]}>
+                <Typography
+                  variant="h3"
+                  color={colors.grey[100]}
+                  sx={{ fontWeight: "bold" }}
+                >
                   Admin
                 </Typography>
                 <IconButton onClick={() => setIsCollapsed(!isCollapsed)}>
@@ -108,14 +114,18 @@ const Sidebar = () => {
             <Typography
               variant="h6"
               color={colors.grey[300]}
-              sx={{ m: "15px 0 5px 20px" }}
+              sx={{
+                m: "15px 0 5px 20px",
+                fontWeight: "bold",
+              }}
             >
               Projects
             </Typography>
+
             <Item
               title="Add New Project"
               to="/newproject"
-              icon={<ReceiptOutlinedIcon />}
+              icon={<AddCircleOutlineIcon />}
               selected={selected}
               setSelected={setSelected}
             />
@@ -123,37 +133,32 @@ const Sidebar = () => {
             <Item
               title="Projects"
               to="/project"
-              icon={<ReceiptOutlinedIcon />}
+              icon={<FolderOutlinedIcon />}
               selected={selected}
               setSelected={setSelected}
             />
 
-            {/* <Item
-              title="Line Chart"
-              to="/line"
-              icon={<TimelineOutlinedIcon />}
-              selected={selected}
-              setSelected={setSelected}
-            /> */}
-
             <Typography
               variant="h6"
               color={colors.grey[300]}
-              sx={{ m: "15px 0 5px 20px" }}
+              sx={{
+                m: "15px 0 5px 20px",
+                fontWeight: "bold",
+              }}
             >
               Clients
             </Typography>
             <Item
               title="Add New Client"
               to="/addclient"
-              icon={<PeopleOutlinedIcon />}
+              icon={<PersonAddOutlinedIcon />}
               selected={selected}
               setSelected={setSelected}
             />
             <Item
               title="Clients Information"
               to="/client"
-              icon={<ContactsOutlinedIcon />}
+              icon={<GroupOutlinedIcon />}
               selected={selected}
               setSelected={setSelected}
             />
@@ -161,7 +166,10 @@ const Sidebar = () => {
             <Typography
               variant="h6"
               color={colors.grey[300]}
-              sx={{ m: "15px 0 5px 20px" }}
+              sx={{
+                m: "15px 0 5px 20px",
+                fontWeight: "bold",
+              }}
             >
               Employees
             </Typography>
@@ -169,7 +177,7 @@ const Sidebar = () => {
             <Item
               title="Add Employee"
               to="/addemployee"
-              icon={<PersonOutlinedIcon />}
+              icon={<GroupAddOutlinedIcon />}
               selected={selected}
               setSelected={setSelected}
             />
@@ -177,54 +185,29 @@ const Sidebar = () => {
             <Item
               title="Employees"
               to="/employee"
-              icon={<PersonOutlinedIcon />}
+              icon={<PeopleOutlineIcon />}
               selected={selected}
               setSelected={setSelected}
             />
-
-            {/* <Typography
-              variant="h6"
-              color={colors.grey[300]}
-              sx={{ m: "15px 0 5px 20px" }}
-            >
-              Data
-            </Typography>
-            <Item
-              title="Manage Team"
-              to="/team"
-              icon={<PeopleOutlinedIcon />}
-              selected={selected}
-              setSelected={setSelected}
-            /> */}
 
             <Typography
               variant="h6"
               color={colors.grey[300]}
-              sx={{ m: "15px 0 5px 20px" }}
+              sx={{
+                m: "15px 0 5px 20px",
+                fontWeight: "bold",
+              }}
             >
               Utils
             </Typography>
-            {/* <Item
-              title="Profile Form"
-              to="/form"
-              icon={<PersonOutlinedIcon />}
-              selected={selected}
-              setSelected={setSelected}
-            /> */}
+
             <Item
               title="Calendar"
               to="/calendar"
-              icon={<CalendarTodayOutlinedIcon />}
+              icon={<EventNoteOutlinedIcon />}
               selected={selected}
               setSelected={setSelected}
             />
-            {/* <Item
-              title="FAQ Page"
-              to="/faq"
-              icon={<HelpOutlineOutlinedIcon />}
-              selected={selected}
-              setSelected={setSelected}
-            /> */}
           </Box>
         </Menu>
       </ProSidebar>

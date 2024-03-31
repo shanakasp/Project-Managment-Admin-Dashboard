@@ -1,11 +1,18 @@
 import ImageIcon from "@mui/icons-material/Image";
-import { Box, Button, TextField } from "@mui/material";
+import { Box, Button, TextField, useTheme } from "@mui/material";
+import useMediaQuery from "@mui/material/useMediaQuery";
 import { Formik } from "formik";
-import React, { useState } from "react";
+import { useState } from "react";
 import * as yup from "yup";
 import Header from "../../components/Header";
-
+import { tokens } from "../../theme";
 const Form = () => {
+  const theme = useTheme();
+  const colors = tokens(theme.palette.mode);
+
+  const isNonMobile = useMediaQuery("(min-width:600px)");
+  const [selectedStartDate, setSelectedStartDate] = useState(null);
+  const [selectedEndDate, setSelectedEndDate] = useState(null);
   const [previewImage, setPreviewImage] = useState(null);
 
   const handleImageChange = (event, setFieldValue) => {
@@ -22,26 +29,18 @@ const Form = () => {
       setPreviewImage(null);
     }
   };
-
-  const initialValues = {};
-
-  const checkoutSchema = yup.object().shape({
-    name: yup.string().required("Name is required"),
-    university: yup.string().required("University is required"),
-    earlier_company: yup.string().required("Earlier Company is required"),
-    image: yup.mixed().required("Image is required"),
-  });
-
   const handleFormSubmit = (values) => {
     console.log(values);
 
     const formData = new FormData();
     formData.append("name", values.name);
-    formData.append("university", values.university);
-    formData.append("earlier_company", values.earlier_company);
+    formData.append("country", values.country);
+    formData.append("description", values.description);
+    formData.append("add_date", values.add_date);
+    formData.append("other", values.other);
     formData.append("image", values.image);
 
-    fetch("http://hitprojback.hasthiya.org/api/HIT/user", {
+    fetch("http://hitprojback.hasthiya.org/api/HIT/employee", {
       method: "POST",
       body: formData,
       headers: {
@@ -55,10 +54,8 @@ const Form = () => {
 
   return (
     <Box m="20px" height="80vh" overflow="auto" paddingRight="20px">
-      <Header
-        title="CREATE EMPLOYEE"
-        subtitle="Create a New Employee Profile"
-      />
+      <Header title="CREATE NEW EMPLOYEE" subtitle="Create a New Employee" />
+
       <Formik
         onSubmit={handleFormSubmit}
         initialValues={initialValues}
@@ -74,76 +71,89 @@ const Form = () => {
           setFieldValue,
         }) => (
           <form onSubmit={handleSubmit}>
-            <Box display="grid" gap="30px">
+            <Box
+              display="grid"
+              gap="30px"
+              gridTemplateColumns="repeat(4, minmax(0, 1fr))"
+              sx={{
+                "& > div": { gridColumn: isNonMobile ? undefined : "span 4" },
+              }}
+            >
               <TextField
                 fullWidth
                 variant="filled"
-                label="Name"
+                label="Name of the Employee"
                 onBlur={handleBlur}
                 onChange={handleChange}
                 value={values.name}
                 name="name"
-                sx={{ gridColumn: "span 4" }}
                 error={!!touched.name && !!errors.name}
                 helperText={touched.name && errors.name}
+                sx={{ gridColumn: "span 4" }}
+              />
+              <TextField
+                fullWidth
+                multiline
+                variant="filled"
+                rows={2}
+                label="Employee University"
+                onBlur={handleBlur}
+                onChange={handleChange}
+                value={values.description}
+                name="description"
+                error={!!touched.description && !!errors.description}
+                helperText={touched.description && errors.description}
+                sx={{ gridColumn: "span 4" }}
               />
 
               <TextField
                 fullWidth
                 variant="filled"
-                label="University"
+                label="Previous Worked Companies"
                 onBlur={handleBlur}
                 onChange={handleChange}
-                value={values.university}
-                name="university"
-                sx={{ gridColumn: "span 2" }}
-                error={!!touched.university && !!errors.university}
-                helperText={touched.university && errors.university}
+                value={values.other}
+                name="other"
+                sx={{ gridColumn: "span 4" }}
               />
 
-              <TextField
-                fullWidth
-                variant="filled"
-                label="Earlier Company"
-                onBlur={handleBlur}
-                onChange={handleChange}
-                value={values.earlier_company}
-                name="earlier_company"
-                sx={{ gridColumn: "span 2" }}
-                error={!!touched.earlier_company && !!errors.earlier_company}
-                helperText={touched.earlier_company && errors.earlier_company}
-              />
-
-              <label htmlFor="image-upload">
-                <input
-                  id="image-upload"
-                  type="file"
-                  accept="image/*"
-                  onChange={(event) => handleImageChange(event, setFieldValue)}
-                  style={{ display: "none" }}
-                />
-                <Button
-                  variant="contained"
-                  component="span"
-                  color="secondary"
-                  startIcon={<ImageIcon />}
-                >
-                  Select Image
-                </Button>
-              </label>
-
+              <Box sx={{ gridColumn: "span 2" }}>
+                <label htmlFor="image-upload">
+                  <input
+                    id="image-upload"
+                    type="file"
+                    accept="image/*"
+                    onChange={(event) =>
+                      handleImageChange(event, setFieldValue)
+                    }
+                    style={{ display: "none" }}
+                  />
+                  <Button
+                    variant="contained"
+                    component="span"
+                    color="secondary"
+                    startIcon={<ImageIcon />}
+                  >
+                    change employee image
+                  </Button>
+                </label>
+              </Box>
               {previewImage && (
                 <img
                   src={previewImage}
                   alt="Preview"
-                  style={{ width: 200, height: 200, marginLeft: "-25%" }}
+                  style={{ width: 200, height: 200, marginLeft: "-95%" }}
                 />
               )}
             </Box>
-
             <Box display="flex" justifyContent="end" mt="20px">
-              <Button type="submit" variant="contained" color="secondary">
-                Create New Employee
+              <Button
+                type="submit"
+                color="secondary"
+                variant="contained"
+                size="large"
+              >
+                <strong>Create New Employee</strong>
               </Button>
             </Box>
           </form>
@@ -151,6 +161,24 @@ const Form = () => {
       </Formik>
     </Box>
   );
+};
+
+const checkoutSchema = yup.object().shape({
+  name: yup.string().required("Name of the Employee is required"),
+
+  description: yup.string().required("Employee University is required"),
+
+  other: yup.string().required("Other is required"),
+  image: yup.mixed().required("Image is required"),
+});
+
+const initialValues = {
+  name: "",
+  country: "",
+  description: "",
+  add_date: "",
+  other: "",
+  image: null,
 };
 
 export default Form;

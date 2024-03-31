@@ -152,7 +152,7 @@ const EditClient = () => {
             </Box>
             <Box display="flex" justifyContent="end" mt="20px">
               <Button type="submit" color="secondary" variant="contained">
-                Update Client Details
+                Update Employee Details
               </Button>
             </Box>
           </form>
