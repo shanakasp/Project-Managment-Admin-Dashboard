@@ -1,6 +1,7 @@
 import { CssBaseline, ThemeProvider } from "@mui/material";
 import { useState } from "react";
-import { Route, Routes } from "react-router-dom";
+import { Route, Routes, useLocation } from "react-router-dom";
+import Signup from "./scenes/auth/signup/Signup.jsx";
 import Bar from "./scenes/bar";
 import Calendar from "./scenes/calendar/calendar";
 import AddNewClient from "./scenes/client/AddNewClient";
@@ -25,23 +26,25 @@ import Edit from "./scenes/projects/projects/Edit.jsx";
 import ViewProject from "./scenes/projects/projects/ViewProject.jsx";
 import Project from "./scenes/projects/projects/index.jsx";
 import Team from "./scenes/team";
-import Signup from "./scenes/auth/signup/Signup.jsx"
 import { ColorModeContext, useMode } from "./theme";
 
 function App() {
   const [theme, colorMode] = useMode();
   const [isSidebar, setIsSidebar] = useState(true);
+  const location = useLocation();
 
+  // Check if the current route is the login page
+  const isLoginPage = location.pathname === "/";
   return (
     <ColorModeContext.Provider value={colorMode}>
       <ThemeProvider theme={theme}>
         <CssBaseline />
         <div className="app">
-          <Sidebar isSidebar={isSidebar} />
+          {!isLoginPage && <Sidebar isSidebar={isSidebar} />}
           <main className="content">
-            <Topbar setIsSidebar={setIsSidebar} />
+            {!isLoginPage && <Topbar setIsSidebar={setIsSidebar} />}
             <Routes>
-              <Route path="/" element={<Dashboard />} />
+              <Route path="/dd" element={<Dashboard />} />
               <Route path="/team" element={<Team />} />
               <Route path="/contacts" element={<Contacts />} />
 
@@ -82,7 +85,7 @@ function App() {
                 element={<EditEmployee />}
               />
 
-<Route path="/signup" element={<Signup />} />
+              <Route path="/" element={<Signup />} />
             </Routes>
           </main>
         </div>
