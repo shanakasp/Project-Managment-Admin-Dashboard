@@ -1,14 +1,30 @@
+import ImageIcon from "@mui/icons-material/Image";
 import { Box, Button, TextField } from "@mui/material";
 import useMediaQuery from "@mui/material/useMediaQuery";
 import { Formik } from "formik";
 import { useState } from "react";
 import * as yup from "yup";
 import Header from "../../../components/Header";
-
 const Form = () => {
   const isNonMobile = useMediaQuery("(min-width:600px)");
   const [selectedStartDate, setSelectedStartDate] = useState(null);
   const [selectedEndDate, setSelectedEndDate] = useState(null);
+  const [previewImage, setPreviewImage] = useState(null);
+
+  const handleImageChange = (event, setFieldValue) => {
+    const file = event.currentTarget.files[0];
+    setFieldValue("image", file);
+
+    if (file) {
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        setPreviewImage(reader.result);
+      };
+      reader.readAsDataURL(file);
+    } else {
+      setPreviewImage(null);
+    }
+  };
 
   const handleFormSubmit = (values) => {
     console.log(values);
@@ -126,13 +142,31 @@ const Form = () => {
                 helperText={touched.status && errors.status}
                 sx={{ gridColumn: "span 4" }}
               />
-              <input
-                type="file"
-                onChange={(event) =>
-                  setFieldValue("image", event.currentTarget.files[0])
-                }
-                sx={{ gridColumn: "span 4" }}
-              />
+              <label htmlFor="image-upload">
+                <input
+                  id="image-upload"
+                  type="file"
+                  accept="image/*"
+                  onChange={(event) => handleImageChange(event, setFieldValue)}
+                  style={{ display: "none" }}
+                />
+                <Button
+                  variant="contained"
+                  component="span"
+                  color="secondary"
+                  startIcon={<ImageIcon />}
+                >
+                  Select Image
+                </Button>
+              </label>
+
+              {previewImage && (
+                <img
+                  src={previewImage}
+                  alt="Preview"
+                  style={{ width: 200, height: 200, marginLeft: "-25%" }}
+                />
+              )}
             </Box>
             <Box display="flex" justifyContent="end" mt="20px">
               <Button type="submit" color="secondary" variant="contained">
