@@ -1,86 +1,129 @@
-import DeleteIcon from "@mui/icons-material/Delete"; // Import DeleteIcon
+import { Visibility as VisibilityIcon } from "@mui/icons-material";
+import DeleteIcon from "@mui/icons-material/Delete";
 import EditIcon from "@mui/icons-material/Edit";
-import VisibilityIcon from "@mui/icons-material/Visibility";
-import {
-  Box,
-  IconButton,
-  MenuItem,
-  Select,
-  Tooltip,
-  useTheme,
-} from "@mui/material";
+import { Box, IconButton, Tooltip, useTheme } from "@mui/material";
 import { DataGrid, GridToolbar } from "@mui/x-data-grid";
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
+import Swal from "sweetalert2";
 import Header from "../../../components/Header";
-import { mockDataContacts } from "../../../data/mockData";
 import { tokens } from "../../../theme";
-
-const Employee = () => {
+const FormsUser = () => {
   const theme = useTheme();
   const colors = tokens(theme.palette.mode);
+  const token = localStorage.getItem("accessToken");
+  const [data, setData] = useState([]);
 
-  const handleCategoryChange = (event, id) => {
-    // Handle category change logic here
-    console.log(
-      "Category changed for row with ID:",
-      id,
-      "New value:",
-      event.target.value
-    );
+  useEffect(() => {
+    fetchData();
+  }, []);
+
+  const handleEditClick = async (id) => {
+    console.log(`Clicked`);
+  };
+  const fetchData = async () => {
+    try {
+      const response = await fetch(
+        "https://hitprojback.hasthiya.org/api/HIT/allUsers",
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+      if (!response.ok) {
+        throw new Error(`Failed to fetch data: ${response.statusText}`);
+      }
+      const responseData = await response.json();
+
+      // Check if responseData has the expected structure
+      if (
+        !responseData.status ||
+        !responseData.data ||
+        !Array.isArray(responseData.data)
+      ) {
+        throw new Error("Invalid response data format");
+      }
+
+      // Define formatDate function to format ISO date string to readable format
+      const formatDate = (isoDateString) => {
+        const date = new Date(isoDateString);
+        const formattedDate = date.toLocaleDateString("en-US", {
+          year: "numeric",
+          month: "short",
+          day: "numeric",
+        });
+        const formattedTime = date.toLocaleTimeString("en-US", {
+          hour: "numeric",
+          minute: "numeric",
+          hour12: true, // Enable 12-hour clock with AM/PM
+        });
+        return `${formattedDate} ${formattedTime}`; // Combine date and time
+      };
+
+      // Map the response data to the required fields
+      const mappedData = responseData.data.map((item) => ({
+        id: item.id,
+        name: item.name,
+        university: item.university,
+        earlier_company: item.earlier_company,
+        // add_date: formatDate(item.add_date),
+      }));
+
+      setData(mappedData);
+    } catch (error) {
+      console.error("Error fetching data:", error);
+    }
   };
 
-  const handleViewClick = (id) => {
-    // Handle view button click logic here
-    console.log("View button clicked for row with ID:", id);
-  };
-
-  const handleEditClick = (id) => {
-    // Handle edit button click logic here
-    console.log("Edit button clicked for row with ID:", id);
-  };
-
-  const handleDeleteClick = (id) => {
-    // Handle delete button click logic here
-    console.log("Delete button clicked for row with ID:", id);
+  const handleDeleteClick = async (id) => {
+    // Display a confirmation dialog using SweetAlert
+    Swal.fire({
+      title: "Are you sure?",
+      text: "Once deleted, you will not be able to recover this employee!",
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonColor: "#3085d6",
+      cancelButtonColor: "#d33",
+      confirmButtonText: "Delete",
+    }).then(async (result) => {
+      // Check if the user confirmed the deletion
+      if (result.isConfirmed) {
+        try {
+          const response = await fetch(
+            `https://hitprojback.hasthiya.org/api/HIT/deleteUserById/${id}`,
+            {
+              method: "DELETE",
+              headers: {
+                Authorization: `Bearer ${token}`,
+              },
+            }
+          );
+          if (!response.ok) {
+            throw new Error("Failed to delete client");
+          }
+          // Remove the deleted project from the state
+          const updatedData = data.filter((item) => item.id !== id);
+          setData(updatedData);
+          Swal.fire(
+            "Deleted!",
+            "Your employee record has been deleted.",
+            "success"
+          );
+        } catch (error) {
+          console.error("Error deleting employee record:", error);
+          Swal.fire("Error!", "Failed to delete employee record.", "error");
+        }
+      }
+    });
   };
 
   const columns = [
-    { field: "id", headerName: "Employee ID", flex: 0.5 },
+    { field: "id", headerName: "ID", flex: 0.5 },
+    { field: "name", headerName: "Employee Name", flex: 1 },
+    { field: "university", headerName: "University", flex: 1 },
 
-    {
-      field: "name",
-      headerName: "Employee Name",
-      flex: 1.2,
-      cellClassName: "name-column--cell",
-    },
-    {
-      field: "age",
-      headerName: "Previous Companies",
-      type: "number",
-      flex: 1,
-      headerAlign: "left",
-      align: "left",
-    },
-    {
-      field: "city",
-      headerName: "Employee University",
-      flex: 1.2,
-    },
-    {
-      field: "category",
-      headerName: "Status",
-      flex: 1,
-      renderCell: (params) => (
-        <Select
-          value={params.value}
-          onChange={(event) => handleCategoryChange(event, params.id)}
-        >
-          <MenuItem value="Pending">Past Employee</MenuItem>
-          <MenuItem value="Developing">Current Employee</MenuItem>
-        </Select>
-      ),
-    },
+    { field: "earlier_company", headerName: "Earlier Company", flex: 1 },
 
     {
       headerName: "Actions",
@@ -89,18 +132,14 @@ const Employee = () => {
         <Box>
           <Tooltip title="View">
             <Link to={`/employee/viewemployee/${params.row.id}`}>
-              <IconButton
-                onClick={() => handleViewClick(params.row.id, params.row.role)}
-              >
+              <IconButton>
                 <VisibilityIcon />
               </IconButton>
             </Link>
           </Tooltip>
           <Tooltip title="Edit">
             <Link to={`/employee/editemployee/${params.row.id}`}>
-              <IconButton
-                onClick={() => handleEditClick(params.row.id, params.row.role)}
-              >
+              <IconButton>
                 <EditIcon />
               </IconButton>
             </Link>
@@ -115,21 +154,27 @@ const Employee = () => {
     },
   ];
 
+  const getRowClassName = (params) => {
+    return "row-divider";
+  };
+
   return (
     <Box m="20px">
-      <Header title="EMPLOYEES" subtitle="List of All the Employees" />
+      <Header title="Employment Logs" subtitle="List of all employees" />
+
       <Box
         m="0 0 0 0"
-        height="70vh"
+        height="55vh"
         sx={{
           "& .MuiDataGrid-root": {
             border: "none",
+            fontSize: "14px",
           },
           "& .MuiDataGrid-cell": {
             borderBottom: "none",
           },
           "& .name-column--cell": {
-            color: colors.greenAccent[300],
+            color: colors.green[300],
           },
           "& .MuiDataGrid-columnHeaders": {
             backgroundColor: colors.blueAccent[800],
@@ -140,25 +185,28 @@ const Employee = () => {
           },
           "& .MuiDataGrid-footerContainer": {
             borderTop: "none",
-            backgroundColor: colors.blueAccent[800],
+            backgroundColor: colors.blueAccent[900],
           },
           "& .MuiCheckbox-root": {
-            color: `${colors.greenAccent[200]} !important`,
+            color: `${colors.green[200]} !important`,
           },
           "& .MuiDataGrid-toolbarContainer .MuiButton-text": {
             color: `${colors.grey[100]} !important`,
           },
+          "& .row-divider": {
+            borderBottom: `1px solid rgba(0, 0, 0, 0.1)`,
+          },
         }}
       >
         <DataGrid
-          rows={mockDataContacts}
+          rows={data}
           columns={columns}
-          sx={{ fontSize: "15px" }}
           components={{ Toolbar: GridToolbar }}
+          getRowClassName={getRowClassName}
         />
       </Box>
     </Box>
   );
 };
 
-export default Employee;
+export default FormsUser;
