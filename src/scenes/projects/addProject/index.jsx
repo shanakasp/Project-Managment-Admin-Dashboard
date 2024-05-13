@@ -1,4 +1,5 @@
-import { Box, Button, TextField } from "@mui/material";
+import ImageIcon from "@mui/icons-material/Image";
+import { Box, Button, MenuItem, TextField } from "@mui/material";
 import useMediaQuery from "@mui/material/useMediaQuery";
 import { Formik } from "formik";
 import { useState } from "react";
@@ -7,29 +8,59 @@ import Header from "../../../components/Header";
 
 const Form = () => {
   const isNonMobile = useMediaQuery("(min-width:600px)");
-  const [selectedStartDate, setSelectedStartDate] = useState(null);
-  const [selectedEndDate, setSelectedEndDate] = useState(null);
+  const [previewImage, setPreviewImage] = useState(null);
 
-  const handleFormSubmit = (values) => {
-    console.log(values);
+  const handleImageChange = (event, setFieldValue) => {
+    const file = event.currentTarget.files[0];
+    setFieldValue("image", file);
 
-    fetch("http://localhost:8000/api/HIT/project", {
-      method: "POST",
-      body: JSON.stringify({
-        title: values.title,
-        description: values.description,
-        start_date: selectedStartDate,
-        end_date: selectedEndDate,
-        status: values.status,
-        image: values.image,
-      }),
-      headers: {
-        "Content-Type": "application/json",
-      },
-    })
-      .then((response) => response.json())
-      .then((data) => console.log(data))
-      .catch((error) => console.error("Error:", error));
+    if (file) {
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        setPreviewImage(reader.result);
+      };
+      reader.readAsDataURL(file);
+    } else {
+      setPreviewImage(null);
+    }
+  };
+
+  const handleFormSubmit = async (values) => {
+    try {
+      const formData = new FormData();
+      formData.append("title", values.title);
+      formData.append("description", values.description);
+      formData.append("start_date", values.start_date);
+      formData.append("end_date", values.end_date);
+      formData.append("status", values.status);
+      formData.append("image", values.image);
+
+      const token = localStorage.getItem("accessToken");
+
+      const response = await fetch(
+        "https://hitprojback.hasthiya.org/api/HIT/project",
+        {
+          method: "POST",
+          body: formData,
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+
+      if (response.ok) {
+        const responseData = await response.json();
+        console.log("Project created successfully:", responseData);
+        // Optionally handle success, e.g., display a success message or navigate
+      } else {
+        const errorData = await response.json();
+        console.error("Error creating project:", errorData);
+        // Optionally handle failure, e.g., display an error message to the user
+      }
+    } catch (error) {
+      console.error("Error creating project:", error);
+      // Handle network errors or other exceptions
+    }
   };
 
   return (
@@ -37,9 +68,16 @@ const Form = () => {
       <Header title="CREATE NEW PROJECT" subtitle="Create a project" />
 
       <Formik
-        onSubmit={handleFormSubmit}
-        initialValues={initialValues}
+        initialValues={{
+          title: "",
+          description: "",
+          start_date: "",
+          end_date: "",
+          status: "",
+          image: null,
+        }}
         validationSchema={checkoutSchema}
+        onSubmit={handleFormSubmit}
       >
         {({
           values,
@@ -64,10 +102,10 @@ const Form = () => {
                 multiline
                 variant="filled"
                 label="Title of the Project"
-                onBlur={handleBlur}
-                onChange={handleChange}
-                value={values.title}
                 name="title"
+                value={values.title}
+                onChange={handleChange}
+                onBlur={handleBlur}
                 error={!!touched.title && !!errors.title}
                 helperText={touched.title && errors.title}
                 sx={{ gridColumn: "span 4" }}
@@ -78,10 +116,10 @@ const Form = () => {
                 variant="filled"
                 rows={6}
                 label="Description"
-                onBlur={handleBlur}
-                onChange={handleChange}
-                value={values.description}
                 name="description"
+                value={values.description}
+                onChange={handleChange}
+                onBlur={handleBlur}
                 error={!!touched.description && !!errors.description}
                 helperText={touched.description && errors.description}
                 sx={{ gridColumn: "span 4" }}
@@ -91,52 +129,80 @@ const Form = () => {
                 variant="filled"
                 type="date"
                 label="Start Date (mm/dd/yyyy)"
-                InputLabelProps={{ shrink: true }}
-                onBlur={handleBlur}
-                onChange={handleChange}
-                value={values.start_date}
                 name="start_date"
+                value={values.start_date}
+                onChange={handleChange}
+                onBlur={handleBlur}
                 error={!!touched.start_date && !!errors.start_date}
                 helperText={touched.start_date && errors.start_date}
+                InputLabelProps={{ shrink: true }}
                 sx={{ gridColumn: "span 2" }}
               />
               <TextField
                 fullWidth
                 variant="filled"
                 type="date"
-                label="End Date  (mm/dd/yyyy)"
-                InputLabelProps={{ shrink: true }}
-                onBlur={handleBlur}
-                onChange={handleChange}
-                value={values.end_date}
+                label="End Date (mm/dd/yyyy)"
                 name="end_date"
+                value={values.end_date}
+                onChange={handleChange}
+                onBlur={handleBlur}
                 error={!!touched.end_date && !!errors.end_date}
                 helperText={touched.end_date && errors.end_date}
+                InputLabelProps={{ shrink: true }}
                 sx={{ gridColumn: "span 2" }}
               />
               <TextField
                 fullWidth
+                select
                 variant="filled"
                 label="Status"
-                onBlur={handleBlur}
-                onChange={handleChange}
-                value={values.status}
                 name="status"
+                value={values.status}
+                onChange={handleChange}
+                onBlur={handleBlur}
                 error={!!touched.status && !!errors.status}
                 helperText={touched.status && errors.status}
                 sx={{ gridColumn: "span 4" }}
-              />
-              <input
-                type="file"
-                onChange={(event) =>
-                  setFieldValue("image", event.currentTarget.files[0])
-                }
-                sx={{ gridColumn: "span 4" }}
-              />
+              >
+                <MenuItem value="Planned">Planned</MenuItem>
+                <MenuItem value="In Progress">In Progress</MenuItem>
+                <MenuItem value="Completed">Completed</MenuItem>
+              </TextField>
+              <label htmlFor="image-upload">
+                <input
+                  id="image-upload"
+                  type="file"
+                  accept="image/*"
+                  onChange={(event) => handleImageChange(event, setFieldValue)}
+                  style={{ display: "none" }}
+                />
+                <Button
+                  variant="contained"
+                  component="span"
+                  color="secondary"
+                  startIcon={<ImageIcon />}
+                >
+                  Select Image
+                </Button>
+              </label>
+
+              {previewImage && (
+                <img
+                  src={previewImage}
+                  alt="Preview"
+                  style={{ width: 200, height: 200, gridColumn: "span 4" }}
+                />
+              )}
             </Box>
             <Box display="flex" justifyContent="end" mt="20px">
-              <Button type="submit" color="secondary" variant="contained">
-                Create New Project
+              <Button
+                type="submit"
+                color="secondary"
+                variant="contained"
+                size="large"
+              >
+                <strong>Create New Project</strong>
               </Button>
             </Box>
           </form>
@@ -152,16 +218,7 @@ const checkoutSchema = yup.object().shape({
   start_date: yup.date().required("Start date is required"),
   end_date: yup.date().required("End date is required"),
   status: yup.string().required("Status is required"),
-  image: yup.mixed().required("Image is required"),
+  // image: yup.mixed().required("Image is required"),
 });
-
-const initialValues = {
-  title: "",
-  description: "",
-  start_date: "",
-  end_date: "",
-  status: "",
-  image: null,
-};
 
 export default Form;

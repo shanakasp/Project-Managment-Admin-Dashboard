@@ -1,10 +1,19 @@
 import { CssBaseline, ThemeProvider } from "@mui/material";
 import { useState } from "react";
-import { Route, Routes } from "react-router-dom";
+import { Route, Routes, useLocation } from "react-router-dom";
+import Signup from "./scenes/auth/signup/Signup.jsx";
 import Bar from "./scenes/bar";
 import Calendar from "./scenes/calendar/calendar";
+import AddNewClient from "./scenes/client/AddNewClient";
+import ClientInformation from "./scenes/client/clientInformation";
+import EditClientInformation from "./scenes/client/clientInformation/EditClient.jsx";
+import ViewClientInformation from "./scenes/client/clientInformation/ViewClient.jsx";
 import Contacts from "./scenes/contacts";
 import Dashboard from "./scenes/dashboard";
+import AddNewEmployee from "./scenes/employee/AddNewEmployee.jsx";
+import EditEmployee from "./scenes/employee/employeeInformation/EditEmployee.jsx";
+import ViewEmployee from "./scenes/employee/employeeInformation/ViewEmployee.jsx";
+import Employee from "./scenes/employee/employeeInformation/index.jsx";
 import FAQ from "./scenes/faq";
 import Form from "./scenes/form";
 import Geography from "./scenes/geography";
@@ -22,17 +31,20 @@ import { ColorModeContext, useMode } from "./theme";
 function App() {
   const [theme, colorMode] = useMode();
   const [isSidebar, setIsSidebar] = useState(true);
+  const location = useLocation();
 
+  // Check if the current route is the login page
+  const isLoginPage = location.pathname === "/";
   return (
     <ColorModeContext.Provider value={colorMode}>
       <ThemeProvider theme={theme}>
         <CssBaseline />
         <div className="app">
-          <Sidebar isSidebar={isSidebar} />
+          {!isLoginPage && <Sidebar isSidebar={isSidebar} />}
           <main className="content">
-            <Topbar setIsSidebar={setIsSidebar} />
+            {!isLoginPage && <Topbar setIsSidebar={setIsSidebar} />}
             <Routes>
-              <Route path="/" element={<Dashboard />} />
+              <Route path="/dd" element={<Dashboard />} />
               <Route path="/team" element={<Team />} />
               <Route path="/contacts" element={<Contacts />} />
 
@@ -50,6 +62,30 @@ function App() {
                 element={<ViewProject></ViewProject>}
               />
               <Route path="/project/editproject/:id" element={<Edit></Edit>} />
+
+              <Route path="/addclient" element={<AddNewClient />} />
+              <Route path="/client" element={<ClientInformation />} />
+              <Route
+                path="/client/viewclient/:id"
+                element={<ViewClientInformation />}
+              />
+              <Route
+                path="/client/editclient/:id"
+                element={<EditClientInformation />}
+              />
+
+              <Route path="/addemployee" element={<AddNewEmployee />} />
+              <Route path="/employee" element={<Employee />} />
+              <Route
+                path="/employee/viewemployee/:id"
+                element={<ViewEmployee />}
+              />
+              <Route
+                path="/employee/editemployee/:id"
+                element={<EditEmployee />}
+              />
+
+              <Route path="/" element={<Signup />} />
             </Routes>
           </main>
         </div>
