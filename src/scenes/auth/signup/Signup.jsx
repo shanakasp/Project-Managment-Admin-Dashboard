@@ -8,35 +8,51 @@ import Paper from "@mui/material/Paper";
 import { createTheme, ThemeProvider } from "@mui/material/styles";
 import TextField from "@mui/material/TextField";
 import Typography from "@mui/material/Typography";
-import * as React from "react";
-import { Link } from "react-router-dom";
-
-function Copyright(props) {
-  return (
-    <Typography
-      variant="body2"
-      color="text.secondary"
-      align="center"
-      {...props}
-    >
-      {"Copyright © Hasthiya "}
-
-      {new Date().getFullYear()}
-      {"."}
-    </Typography>
-  );
-}
+import React, { useState } from "react";
+import { useNavigate } from "react-router-dom";
 
 const defaultTheme = createTheme();
 
 export default function SignInSide() {
-  const handleSubmit = (event) => {
+  const navigate = useNavigate();
+  const [error, setError] = useState("");
+
+  const handleSubmit = async (event) => {
     event.preventDefault();
     const data = new FormData(event.currentTarget);
-    console.log({
+    const formData = {
       email: data.get("email"),
       password: data.get("password"),
-    });
+    };
+
+    try {
+      const response = await fetch(
+        "https://hitprojback.hasthiya.org/api/user/login",
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(formData),
+        }
+      );
+
+      if (response.ok) {
+        const responseData = await response.json();
+        const { token } = responseData;
+
+        // Save token to localStorage
+        localStorage.setItem("accessToken", token);
+
+        navigate("/dd");
+      } else {
+        const errorData = await response.json();
+        setError(errorData.message || "Login failed");
+      }
+    } catch (error) {
+      console.error("Error during login:", error.message);
+      setError("An error occurred during login");
+    }
   };
 
   return (
@@ -50,7 +66,6 @@ export default function SignInSide() {
           md={7}
           sx={{
             position: "relative", // Ensure relative positioning
-            // backgroundImage: `url(../../assets/user.png)`,
             backgroundImage:
               "url(https://source.unsplash.com/random?wallpapers)",
             backgroundRepeat: "no-repeat",
@@ -66,7 +81,6 @@ export default function SignInSide() {
           <Box
             sx={{
               my: 8,
-              mr: "250px",
               mx: 4,
               display: "flex",
               flexDirection: "column",
@@ -77,7 +91,6 @@ export default function SignInSide() {
             <Avatar sx={{ m: 1, bgcolor: "secondary.main" }}>
               <LockOutlinedIcon />
             </Avatar>
-            <h1>Hasthiya IT Admin Dashboard</h1>
             <Typography component="h1" variant="h5">
               Sign in
             </Typography>
@@ -108,18 +121,20 @@ export default function SignInSide() {
                 autoComplete="current-password"
               />
 
-              <Link to="/dd">
-                <Button
-                  type="submit"
-                  fullWidth
-                  variant="contained"
-                  sx={{ mt: 3, mb: 2 }}
-                >
-                  Sign In
-                </Button>
-              </Link>
+              <Button
+                type="submit"
+                fullWidth
+                variant="contained"
+                sx={{ mt: 3, mb: 2 }}
+              >
+                Sign In
+              </Button>
 
-              <Copyright sx={{ mt: 5 }} />
+              {error && (
+                <Typography variant="body2" color="error" sx={{ mt: 2 }}>
+                  {error}
+                </Typography>
+              )}
             </Box>
           </Box>
         </Grid>
