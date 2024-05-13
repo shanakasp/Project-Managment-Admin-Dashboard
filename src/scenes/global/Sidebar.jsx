@@ -65,7 +65,7 @@ const Sidebar = () => {
             onClick={() => setIsCollapsed(!isCollapsed)}
             icon={isCollapsed ? <MenuOutlinedIcon /> : undefined}
             style={{
-              margin: "10px 0 20px 0",
+              margin: "20px 0 20px 0",
               color: colors.grey[100],
             }}
           >
@@ -97,13 +97,13 @@ const Sidebar = () => {
                   variant="h2"
                   color={colors.grey[100]}
                   fontWeight="bold"
-                  sx={{ m: "10px 0 0 0" }}
+                  sx={{ m: "20px 0 0 0" }}
                 ></Typography>
               </Box>
             </Box>
           )}
 
-          <Box paddingLeft={isCollapsed ? undefined : "10%"}>
+          <Box height="86.5vh" paddingLeft={isCollapsed ? 0 : "10%"}>
             <Item
               title="Dashboard"
               to="/dd"
@@ -115,7 +115,7 @@ const Sidebar = () => {
               variant="h6"
               color={colors.grey[300]}
               sx={{
-                m: "15px 0 5px 20px",
+                m: "25px 0 5px 20px",
                 fontWeight: "bold",
               }}
             >
@@ -142,7 +142,7 @@ const Sidebar = () => {
               variant="h6"
               color={colors.grey[300]}
               sx={{
-                m: "15px 0 5px 20px",
+                m: "25px 0 5px 20px",
                 fontWeight: "bold",
               }}
             >
@@ -167,11 +167,11 @@ const Sidebar = () => {
               variant="h6"
               color={colors.grey[300]}
               sx={{
-                m: "15px 0 5px 20px",
+                m: "25px 0 5px 20px",
                 fontWeight: "bold",
               }}
             >
-              Employees
+              Team
             </Typography>
 
             <Item
