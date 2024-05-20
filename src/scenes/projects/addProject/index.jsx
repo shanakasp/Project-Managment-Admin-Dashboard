@@ -1,14 +1,26 @@
 import ImageIcon from "@mui/icons-material/Image";
-import { Box, Button, MenuItem, TextField } from "@mui/material";
+import {
+  Alert,
+  Box,
+  Button,
+  MenuItem,
+  Snackbar,
+  TextField,
+} from "@mui/material";
 import useMediaQuery from "@mui/material/useMediaQuery";
 import { Formik } from "formik";
 import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import * as yup from "yup";
 import Header from "../../../components/Header";
 
 const Form = () => {
   const isNonMobile = useMediaQuery("(min-width:600px)");
   const [previewImage, setPreviewImage] = useState(null);
+  const [snackbarOpen, setSnackbarOpen] = useState(false);
+  const [snackbarMessage, setSnackbarMessage] = useState("");
+  const [snackbarSeverity, setSnackbarSeverity] = useState("success");
+  const navigate = useNavigate();
 
   const handleImageChange = (event, setFieldValue) => {
     const file = event.currentTarget.files[0];
@@ -25,7 +37,14 @@ const Form = () => {
     }
   };
 
-  const handleFormSubmit = async (values) => {
+  const handleFormSubmit = async (values, { resetForm }) => {
+    if (!values.image) {
+      setSnackbarMessage("Please select an image");
+      setSnackbarSeverity("error");
+      setSnackbarOpen(true);
+      return;
+    }
+
     try {
       const formData = new FormData();
       formData.append("title", values.title);
@@ -51,16 +70,31 @@ const Form = () => {
       if (response.ok) {
         const responseData = await response.json();
         console.log("Project created successfully:", responseData);
-        // Optionally handle success, e.g., display a success message or navigate
+        setSnackbarMessage("Project created successfully!");
+        setSnackbarSeverity("success");
+        setSnackbarOpen(true);
+
+        setPreviewImage(null);
+        setTimeout(() => {
+          navigate("/project");
+        }, 3000);
       } else {
         const errorData = await response.json();
         console.error("Error creating project:", errorData);
-        // Optionally handle failure, e.g., display an error message to the user
+        setSnackbarMessage("Error creating project: " + errorData.message);
+        setSnackbarSeverity("error");
+        setSnackbarOpen(true);
       }
     } catch (error) {
       console.error("Error creating project:", error);
-      // Handle network errors or other exceptions
+      setSnackbarMessage("Error creating project: " + error.message);
+      setSnackbarSeverity("error");
+      setSnackbarOpen(true);
     }
+  };
+
+  const handleSnackbarClose = () => {
+    setSnackbarOpen(false);
   };
 
   return (
@@ -208,6 +242,22 @@ const Form = () => {
           </form>
         )}
       </Formik>
+
+      <Snackbar
+        open={snackbarOpen}
+        autoHideDuration={5000}
+        onClose={handleSnackbarClose}
+        anchorOrigin={{ vertical: "top", horizontal: "right" }}
+      >
+        <Alert
+          onClose={handleSnackbarClose}
+          severity={snackbarSeverity}
+          variant="filled"
+          sx={{ width: "100%" }}
+        >
+          {snackbarMessage}
+        </Alert>
+      </Snackbar>
     </Box>
   );
 };
@@ -218,7 +268,7 @@ const checkoutSchema = yup.object().shape({
   start_date: yup.date().required("Start date is required"),
   end_date: yup.date().required("End date is required"),
   status: yup.string().required("Status is required"),
-  // image: yup.mixed().required("Image is required"),
+  image: yup.mixed().required("Image is required"),
 });
 
 export default Form;

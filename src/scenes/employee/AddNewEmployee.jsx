@@ -1,19 +1,24 @@
 import ImageIcon from "@mui/icons-material/Image";
-import { Box, Button, TextField, useTheme } from "@mui/material";
+import { Box, Button, Snackbar, TextField, useTheme } from "@mui/material";
+import MuiAlert from "@mui/material/Alert";
 import useMediaQuery from "@mui/material/useMediaQuery";
 import { Formik } from "formik";
 import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import * as yup from "yup";
 import Header from "../../components/Header";
 import { tokens } from "../../theme";
+
 const Form = () => {
   const theme = useTheme();
   const colors = tokens(theme.palette.mode);
-
+  const token = localStorage.getItem("accessToken");
   const isNonMobile = useMediaQuery("(min-width:600px)");
-  const [selectedStartDate, setSelectedStartDate] = useState(null);
-  const [selectedEndDate, setSelectedEndDate] = useState(null);
+  const navigate = useNavigate();
   const [previewImage, setPreviewImage] = useState(null);
+  const [openSnackbar, setOpenSnackbar] = useState(false);
+  const [alertMessage, setAlertMessage] = useState("");
+  const [alertSeverity, setAlertSeverity] = useState("success");
 
   const handleImageChange = (event, setFieldValue) => {
     const file = event.currentTarget.files[0];
@@ -29,9 +34,8 @@ const Form = () => {
       setPreviewImage(null);
     }
   };
-  const handleFormSubmit = (values) => {
-    console.log(values);
 
+  const handleFormSubmit = (values, { setSubmitting }) => {
     const formData = new FormData();
     formData.append("name", values.name);
     formData.append("country", values.country);
@@ -40,22 +44,38 @@ const Form = () => {
     formData.append("other", values.other);
     formData.append("image", values.image);
 
-    fetch("http://hitprojback.hasthiya.org/api/HIT/employee", {
+    fetch("https://hitprojback.hasthiya.org/api/HIT/user", {
       method: "POST",
       body: formData,
       headers: {
-        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
       },
     })
       .then((response) => response.json())
-      .then((data) => console.log(data))
-      .catch((error) => console.error("Error:", error));
+      .then((data) => {
+        setSubmitting(false);
+        if (data.success) {
+          setAlertMessage("Employee created successfully!");
+          setAlertSeverity("success");
+          setOpenSnackbar(true);
+          setTimeout(() => navigate("/client"), 3000);
+        } else {
+          setAlertMessage(data.message || "Something went wrong!");
+          setAlertSeverity("error");
+          setOpenSnackbar(true);
+        }
+      })
+      .catch((error) => {
+        setSubmitting(false);
+        setAlertMessage("Failed to create employee!");
+        setAlertSeverity("error");
+        setOpenSnackbar(true);
+      });
   };
 
   return (
     <Box m="20px" height="80vh" overflow="auto" paddingRight="20px">
       <Header title="CREATE NEW EMPLOYEE" subtitle="Create a New Employee" />
-
       <Formik
         onSubmit={handleFormSubmit}
         initialValues={initialValues}
@@ -69,6 +89,7 @@ const Form = () => {
           handleChange,
           handleSubmit,
           setFieldValue,
+          isSubmitting,
         }) => (
           <form onSubmit={handleSubmit}>
             <Box
@@ -114,6 +135,8 @@ const Form = () => {
                 onChange={handleChange}
                 value={values.other}
                 name="other"
+                error={!!touched.other && !!errors.other}
+                helperText={touched.other && errors.other}
                 sx={{ gridColumn: "span 4" }}
               />
 
@@ -134,7 +157,7 @@ const Form = () => {
                     color="secondary"
                     startIcon={<ImageIcon />}
                   >
-                    change employee image
+                    Change Employee Image
                   </Button>
                 </label>
               </Box>
@@ -152,6 +175,7 @@ const Form = () => {
                 color="secondary"
                 variant="contained"
                 size="large"
+                disabled={isSubmitting}
               >
                 <strong>Create New Employee</strong>
               </Button>
@@ -159,24 +183,38 @@ const Form = () => {
           </form>
         )}
       </Formik>
+      <Snackbar
+        open={openSnackbar}
+        autoHideDuration={5000}
+        onClose={() => setOpenSnackbar(false)}
+        anchorOrigin={{ vertical: "top", horizontal: "right" }}
+      >
+        <MuiAlert
+          onClose={() => setOpenSnackbar(false)}
+          severity={alertSeverity}
+          elevation={6}
+          variant="filled"
+          sx={{ color: "#fff" }}
+        >
+          {alertSeverity === "success" ? "Success" : "Error"}
+          <br />
+          {alertMessage}
+        </MuiAlert>
+      </Snackbar>
     </Box>
   );
 };
 
 const checkoutSchema = yup.object().shape({
   name: yup.string().required("Name of the Employee is required"),
-
   description: yup.string().required("Employee University is required"),
-
-  other: yup.string().required("Other is required"),
+  other: yup.string().required("Previous Worked Companies is required"),
   image: yup.mixed().required("Image is required"),
 });
 
 const initialValues = {
   name: "",
-  country: "",
   description: "",
-  add_date: "",
   other: "",
   image: null,
 };

@@ -36,7 +36,6 @@ const FormsUser = () => {
       }
       const responseData = await response.json();
 
-      // Check if responseData has the expected structure
       if (
         !responseData.status ||
         !responseData.data ||
@@ -45,7 +44,6 @@ const FormsUser = () => {
         throw new Error("Invalid response data format");
       }
 
-      // Define formatDate function to format ISO date string to readable format
       const formatDate = (isoDateString) => {
         const date = new Date(isoDateString);
         const formattedDate = date.toLocaleDateString("en-US", {
@@ -56,12 +54,11 @@ const FormsUser = () => {
         const formattedTime = date.toLocaleTimeString("en-US", {
           hour: "numeric",
           minute: "numeric",
-          hour12: true, // Enable 12-hour clock with AM/PM
+          hour12: true,
         });
-        return `${formattedDate} ${formattedTime}`; // Combine date and time
+        return `${formattedDate} ${formattedTime}`;
       };
 
-      // Map the response data to the required fields
       const mappedData = responseData.data.map((item) => ({
         id: item.id,
         title: item.title,
@@ -71,15 +68,15 @@ const FormsUser = () => {
         status: item.status,
       }));
 
-      // Update the state with the mapped data
-      setData(mappedData);
+      const sortedData = mappedData.sort((a, b) => b.id - a.id);
+
+      setData(sortedData);
     } catch (error) {
       console.error("Error fetching data:", error);
     }
   };
 
   const handleDeleteClick = async (id) => {
-    // Display a confirmation dialog using SweetAlert
     Swal.fire({
       title: "Are you sure?",
       text: "Once deleted, you will not be able to recover this project!",
@@ -89,7 +86,6 @@ const FormsUser = () => {
       cancelButtonColor: "#d33",
       confirmButtonText: "Delete",
     }).then(async (result) => {
-      // Check if the user confirmed the deletion
       if (result.isConfirmed) {
         try {
           const response = await fetch(
@@ -104,7 +100,7 @@ const FormsUser = () => {
           if (!response.ok) {
             throw new Error("Failed to delete project");
           }
-          // Remove the deleted project from the state
+
           const updatedData = data.filter((item) => item.id !== id);
           setData(updatedData);
           Swal.fire("Deleted!", "Your project has been deleted.", "success");
@@ -124,6 +120,7 @@ const FormsUser = () => {
     { field: "end_date", headerName: "End Date", flex: 1 },
     { field: "status", headerName: "Status", flex: 1.2 },
     {
+      field: "Actions",
       headerName: "Actions",
       flex: 0.7,
       renderCell: (params) => (

@@ -1,28 +1,37 @@
 import ImageIcon from "@mui/icons-material/Image";
 import {
+  AlertTitle,
   Box,
   Button,
   MenuItem,
   Select,
+  Snackbar,
   TextField,
   Typography,
+  useMediaQuery,
   useTheme,
 } from "@mui/material";
-import useMediaQuery from "@mui/material/useMediaQuery";
+import MuiAlert from "@mui/material/Alert";
 import { Formik } from "formik";
 import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import * as yup from "yup";
 import Header from "../../components/Header";
 import { countries } from "../../data/country";
 import { tokens } from "../../theme";
+
 const Form = () => {
   const theme = useTheme();
   const colors = tokens(theme.palette.mode);
-
+  const token = localStorage.getItem("accessToken");
   const isNonMobile = useMediaQuery("(min-width:600px)");
   const [selectedStartDate, setSelectedStartDate] = useState(null);
   const [selectedEndDate, setSelectedEndDate] = useState(null);
   const [previewImage, setPreviewImage] = useState(null);
+  const [openSnackbar, setOpenSnackbar] = useState(false);
+  const [alertSeverity, setAlertSeverity] = useState("success");
+  const [alertMessage, setAlertMessage] = useState("");
+  const navigate = useNavigate();
 
   const handleImageChange = (event, setFieldValue) => {
     const file = event.currentTarget.files[0];
@@ -38,27 +47,52 @@ const Form = () => {
       setPreviewImage(null);
     }
   };
-  const handleFormSubmit = (values) => {
-    console.log(values);
 
-    const formData = new FormData();
-    formData.append("name", values.name);
-    formData.append("country", values.country);
-    formData.append("description", values.description);
-    formData.append("add_date", values.add_date);
-    formData.append("other", values.other);
-    formData.append("image", values.image);
+  const handleFormSubmit = async (values, { resetForm }) => {
+    try {
+      const formData = new FormData();
+      formData.append("name", values.name);
+      formData.append("country", values.country);
+      formData.append("description", values.description);
+      formData.append("add_date", values.add_date);
+      formData.append("other", values.other);
+      formData.append("image", values.image);
 
-    fetch("http://hitprojback.hasthiya.org/api/HIT/client", {
-      method: "POST",
-      body: formData,
-      headers: {
-        "Content-Type": "application/json",
-      },
-    })
-      .then((response) => response.json())
-      .then((data) => console.log(data))
-      .catch((error) => console.error("Error:", error));
+      const response = await fetch(
+        "http://hitprojback.hasthiya.org/api/HIT/client",
+        {
+          method: "POST",
+          body: formData,
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+
+      if (response.ok) {
+        const data = await response.json();
+        console.log(data);
+        setAlertSeverity("success");
+        setAlertMessage("Client added successfully!");
+        setOpenSnackbar(true);
+
+        setPreviewImage(null);
+        setTimeout(() => {
+          navigate("/client");
+        }, 3000);
+      } else {
+        const errorData = await response.json();
+        console.error("Error:", errorData);
+        setAlertSeverity("error");
+        setAlertMessage("Failed to add client: " + errorData.message);
+        setOpenSnackbar(true);
+      }
+    } catch (error) {
+      console.error("Error:", error);
+      setAlertSeverity("error");
+      setAlertMessage("Failed to add client: " + error.message);
+      setOpenSnackbar(true);
+    }
   };
 
   return (
@@ -139,7 +173,7 @@ const Form = () => {
                 sx={{ gridColumn: "span 2" }}
               />
               <Box>
-                <Typography>Country</Typography>{" "}
+                <Typography>Country</Typography>
                 <Select
                   value={values.country}
                   onChange={handleChange}
@@ -201,6 +235,26 @@ const Form = () => {
           </form>
         )}
       </Formik>
+
+      <Snackbar
+        open={openSnackbar}
+        autoHideDuration={5000}
+        onClose={() => setOpenSnackbar(false)}
+        anchorOrigin={{ vertical: "top", horizontal: "right" }}
+      >
+        <MuiAlert
+          onClose={() => setOpenSnackbar(false)}
+          severity={alertSeverity}
+          elevation={6}
+          variant="filled"
+          sx={{ color: "#fff" }}
+        >
+          <AlertTitle>
+            {alertSeverity === "success" ? "Success" : "Error"}
+          </AlertTitle>
+          {alertMessage}
+        </MuiAlert>
+      </Snackbar>
     </Box>
   );
 };
