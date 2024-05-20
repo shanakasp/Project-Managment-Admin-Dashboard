@@ -41,7 +41,6 @@ export default function SignInSide() {
         const responseData = await response.json();
         const { token } = responseData;
 
-        // Save token to localStorage
         localStorage.setItem("accessToken", token);
 
         navigate("/dd");
