@@ -1,19 +1,25 @@
 import ImageIcon from "@mui/icons-material/Image";
-import { Box, Button, TextField, useTheme } from "@mui/material";
+import { Box, Button, Snackbar, TextField, useTheme } from "@mui/material";
+import MuiAlert from "@mui/material/Alert";
 import useMediaQuery from "@mui/material/useMediaQuery";
+import axios from "axios";
 import { Formik } from "formik";
 import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import * as yup from "yup";
 import Header from "../../components/Header";
 import { tokens } from "../../theme";
+
 const Form = () => {
   const theme = useTheme();
   const colors = tokens(theme.palette.mode);
-
+  const token = localStorage.getItem("accessToken");
   const isNonMobile = useMediaQuery("(min-width:600px)");
-  const [selectedStartDate, setSelectedStartDate] = useState(null);
-  const [selectedEndDate, setSelectedEndDate] = useState(null);
+  const navigate = useNavigate();
   const [previewImage, setPreviewImage] = useState(null);
+  const [openSnackbar, setOpenSnackbar] = useState(false);
+  const [alertMessage, setAlertMessage] = useState("");
+  const [alertSeverity, setAlertSeverity] = useState("success");
 
   const handleImageChange = (event, setFieldValue) => {
     const file = event.currentTarget.files[0];
@@ -29,33 +35,45 @@ const Form = () => {
       setPreviewImage(null);
     }
   };
-  const handleFormSubmit = (values) => {
-    console.log(values);
 
+  const handleFormSubmit = (values, { setSubmitting }) => {
     const formData = new FormData();
     formData.append("name", values.name);
-    formData.append("country", values.country);
-    formData.append("description", values.description);
-    formData.append("add_date", values.add_date);
-    formData.append("other", values.other);
+    formData.append("university", values.university);
+    formData.append("earlier_company", values.earlier_company);
     formData.append("image", values.image);
 
-    fetch("http://hitprojback.hasthiya.org/api/HIT/employee", {
-      method: "POST",
-      body: formData,
-      headers: {
-        "Content-Type": "application/json",
-      },
-    })
-      .then((response) => response.json())
-      .then((data) => console.log(data))
-      .catch((error) => console.error("Error:", error));
+    axios
+      .post("https://hitprojback.hasthiya.org/api/HIT/user", formData, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      })
+      .then((response) => {
+        setSubmitting(false);
+        if (response.data.success) {
+          setAlertMessage("Employee created successfully!");
+          setAlertSeverity("success");
+          setOpenSnackbar(true);
+          setTimeout(() => navigate("/employee"), 3000);
+        } else {
+          setAlertMessage(response.data.message || "Something went wrong!");
+          setAlertSeverity("success");
+          setOpenSnackbar(true);
+          setTimeout(() => navigate("/employee"), 3000);
+        }
+      })
+      .catch((error) => {
+        setSubmitting(false);
+        setAlertMessage("Failed to create employee!");
+        setAlertSeverity("error");
+        setOpenSnackbar(true);
+      });
   };
 
   return (
     <Box m="20px" height="80vh" overflow="auto" paddingRight="20px">
       <Header title="CREATE NEW EMPLOYEE" subtitle="Create a New Employee" />
-
       <Formik
         onSubmit={handleFormSubmit}
         initialValues={initialValues}
@@ -69,6 +87,7 @@ const Form = () => {
           handleChange,
           handleSubmit,
           setFieldValue,
+          isSubmitting,
         }) => (
           <form onSubmit={handleSubmit}>
             <Box
@@ -93,30 +112,28 @@ const Form = () => {
               />
               <TextField
                 fullWidth
-                multiline
                 variant="filled"
-                rows={2}
                 label="Employee University"
                 onBlur={handleBlur}
                 onChange={handleChange}
-                value={values.description}
-                name="description"
-                error={!!touched.description && !!errors.description}
-                helperText={touched.description && errors.description}
+                value={values.university}
+                name="university"
+                error={!!touched.university && !!errors.university}
+                helperText={touched.university && errors.university}
                 sx={{ gridColumn: "span 4" }}
               />
-
               <TextField
                 fullWidth
                 variant="filled"
                 label="Previous Worked Companies"
                 onBlur={handleBlur}
                 onChange={handleChange}
-                value={values.other}
-                name="other"
+                value={values.earlier_company}
+                name="earlier_company"
+                error={!!touched.earlier_company && !!errors.earlier_company}
+                helperText={touched.earlier_company && errors.earlier_company}
                 sx={{ gridColumn: "span 4" }}
               />
-
               <Box sx={{ gridColumn: "span 2" }}>
                 <label htmlFor="image-upload">
                   <input
@@ -134,7 +151,7 @@ const Form = () => {
                     color="secondary"
                     startIcon={<ImageIcon />}
                   >
-                    change employee image
+                    Change Employee Image
                   </Button>
                 </label>
               </Box>
@@ -152,6 +169,7 @@ const Form = () => {
                 color="secondary"
                 variant="contained"
                 size="large"
+                disabled={isSubmitting}
               >
                 <strong>Create New Employee</strong>
               </Button>
@@ -159,25 +177,41 @@ const Form = () => {
           </form>
         )}
       </Formik>
+      <Snackbar
+        open={openSnackbar}
+        autoHideDuration={5000}
+        onClose={() => setOpenSnackbar(false)}
+        anchorOrigin={{ vertical: "top", horizontal: "right" }}
+      >
+        <MuiAlert
+          onClose={() => setOpenSnackbar(false)}
+          severity={alertSeverity}
+          elevation={6}
+          variant="filled"
+          sx={{ color: "#fff" }}
+        >
+          {alertSeverity === "success" ? "Success" : "Error"}
+          <br />
+          {alertMessage}
+        </MuiAlert>
+      </Snackbar>
     </Box>
   );
 };
 
 const checkoutSchema = yup.object().shape({
   name: yup.string().required("Name of the Employee is required"),
-
-  description: yup.string().required("Employee University is required"),
-
-  other: yup.string().required("Other is required"),
+  university: yup.string().required("Employee University is required"),
+  earlier_company: yup
+    .string()
+    .required("Previous Worked Companies is required"),
   image: yup.mixed().required("Image is required"),
 });
 
 const initialValues = {
   name: "",
-  country: "",
-  description: "",
-  add_date: "",
-  other: "",
+  university: "",
+  earlier_company: "",
   image: null,
 };
 
