@@ -55,12 +55,12 @@ const Form = () => {
           setAlertMessage("Employee created successfully!");
           setAlertSeverity("success");
           setOpenSnackbar(true);
-          setTimeout(() => navigate("/client"), 3000);
+          setTimeout(() => navigate("/employee"), 3000);
         } else {
           setAlertMessage(response.data.message || "Something went wrong!");
           setAlertSeverity("success");
           setOpenSnackbar(true);
-          setTimeout(() => navigate("/client"), 3000);
+          setTimeout(() => navigate("/employee"), 3000);
         }
       })
       .catch((error) => {

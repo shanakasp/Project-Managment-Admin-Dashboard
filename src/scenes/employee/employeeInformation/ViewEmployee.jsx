@@ -104,7 +104,7 @@ const ViewEmpl = () => {
             <img
               src={employee.imageUrl}
               alt="Employee"
-              style={{ width: "100%", height: "auto" }}
+              style={{ width: "25%", height: "auto" }}
             />
           ) : (
             <Typography>Image not available</Typography>

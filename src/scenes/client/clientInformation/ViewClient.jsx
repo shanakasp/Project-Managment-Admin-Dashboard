@@ -106,7 +106,7 @@ const Viewclient = () => {
             <img
               src={client.imageUrl}
               alt="Company Logo"
-              style={{ width: 200, height: 200 }}
+              style={{ width: "25%", height: "auto" }}
             />
           ) : (
             <Typography>No image available</Typography>

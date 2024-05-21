@@ -116,7 +116,7 @@ const ViewProject = () => {
             <img
               src={project.imageUrl}
               alt={project.title}
-              style={{ width: "100%" }}
+              style={{ width: "25%", height: "auto" }}
             />
           ) : (
             <Typography>No image available</Typography>
