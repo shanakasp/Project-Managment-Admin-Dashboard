@@ -1,13 +1,16 @@
+import { Visibility, VisibilityOff } from "@mui/icons-material";
 import LockOutlinedIcon from "@mui/icons-material/LockOutlined";
 import Avatar from "@mui/material/Avatar";
 import Box from "@mui/material/Box";
 import Button from "@mui/material/Button";
 import CssBaseline from "@mui/material/CssBaseline";
 import Grid from "@mui/material/Grid";
+import IconButton from "@mui/material/IconButton";
+import InputAdornment from "@mui/material/InputAdornment";
 import Paper from "@mui/material/Paper";
-import { createTheme, ThemeProvider } from "@mui/material/styles";
 import TextField from "@mui/material/TextField";
 import Typography from "@mui/material/Typography";
+import { ThemeProvider, createTheme } from "@mui/material/styles";
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 
@@ -16,6 +19,9 @@ const defaultTheme = createTheme();
 export default function SignInSide() {
   const navigate = useNavigate();
   const [error, setError] = useState("");
+  const [emailError, setEmailError] = useState("");
+  const [passwordError, setPasswordError] = useState("");
+  const [showPassword, setShowPassword] = useState(false);
 
   const handleSubmit = async (event) => {
     event.preventDefault();
@@ -25,33 +31,62 @@ export default function SignInSide() {
       password: data.get("password"),
     };
 
-    try {
-      const response = await fetch(
-        "https://hitprojback.hasthiya.org/api/user/login",
-        {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify(formData),
-        }
-      );
+    // Reset any previous errors
+    setError("");
+    setEmailError("");
+    setPasswordError("");
 
-      if (response.ok) {
-        const responseData = await response.json();
-        const { token } = responseData;
-
-        localStorage.setItem("accessToken", token);
-
-        navigate("/dd");
-      } else {
-        const errorData = await response.json();
-        setError(errorData.message || "Login failed");
-      }
-    } catch (error) {
-      console.error("Error during login:", error.message);
-      setError("An error occurred during login");
+    // Validate email and password
+    if (!formData.email) {
+      setEmailError("Email is required");
     }
+    if (!formData.password) {
+      setPasswordError("Password is required");
+    }
+
+    if (formData.email && formData.password) {
+      try {
+        const response = await fetch(
+          "https://hitprojback.hasthiya.org/api/user/login",
+          {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify(formData),
+          }
+        );
+
+        if (response.ok) {
+          const responseData = await response.json();
+          const { token } = responseData;
+
+          localStorage.setItem("accessToken", token);
+
+          navigate("/dd");
+        } else {
+          const errorData = await response.json();
+          setError(errorData.message || "Login failed");
+        }
+      } catch (error) {
+        console.error("Error during login:", error.message);
+        setError("An error occurred during login");
+      }
+    }
+  };
+
+  const handleChange = (event) => {
+    // Clear validation errors when user starts entering data
+    setEmailError("");
+    setPasswordError("");
+  };
+
+  const handleClickShowPassword = () => {
+    setShowPassword(!showPassword);
+  };
+
+  const handleMouseDownPassword = (event) => {
+    event.preventDefault();
   };
 
   return (
@@ -84,7 +119,7 @@ export default function SignInSide() {
               display: "flex",
               flexDirection: "column",
               alignItems: "center",
-              position: "relative", // Ensure relative positioning
+              position: "relative",
             }}
           >
             <Avatar sx={{ m: 1, bgcolor: "secondary.main" }}>
@@ -108,6 +143,9 @@ export default function SignInSide() {
                 name="email"
                 autoComplete="email"
                 autoFocus
+                error={!!emailError}
+                helperText={emailError}
+                onChange={handleChange}
               />
               <TextField
                 margin="normal"
@@ -115,9 +153,25 @@ export default function SignInSide() {
                 fullWidth
                 name="password"
                 label="Password"
-                type="password"
+                type={showPassword ? "text" : "password"}
                 id="password"
                 autoComplete="current-password"
+                error={!!passwordError}
+                helperText={passwordError}
+                onChange={handleChange}
+                InputProps={{
+                  endAdornment: (
+                    <InputAdornment position="end">
+                      <IconButton
+                        onClick={handleClickShowPassword}
+                        onMouseDown={handleMouseDownPassword}
+                        edge="end"
+                      >
+                        {showPassword ? <Visibility /> : <VisibilityOff />}
+                      </IconButton>
+                    </InputAdornment>
+                  ),
+                }}
               />
 
               <Button

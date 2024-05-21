@@ -121,7 +121,6 @@ const Sidebar = () => {
             >
               Projects
             </Typography>
-
             <Item
               title="Add New Project"
               to="/newproject"
@@ -129,7 +128,6 @@ const Sidebar = () => {
               selected={selected}
               setSelected={setSelected}
             />
-
             <Item
               title="Projects"
               to="/project"
@@ -137,7 +135,6 @@ const Sidebar = () => {
               selected={selected}
               setSelected={setSelected}
             />
-
             <Typography
               variant="h6"
               color={colors.grey[300]}
@@ -162,7 +159,6 @@ const Sidebar = () => {
               selected={selected}
               setSelected={setSelected}
             />
-
             <Typography
               variant="h6"
               color={colors.grey[300]}
@@ -173,7 +169,6 @@ const Sidebar = () => {
             >
               Team
             </Typography>
-
             <Item
               title="Add Employee"
               to="/addemployee"
@@ -181,7 +176,6 @@ const Sidebar = () => {
               selected={selected}
               setSelected={setSelected}
             />
-
             <Item
               title="Employees"
               to="/employee"
@@ -189,7 +183,6 @@ const Sidebar = () => {
               selected={selected}
               setSelected={setSelected}
             />
-
             <Typography
               variant="h6"
               color={colors.grey[300]}
@@ -200,7 +193,6 @@ const Sidebar = () => {
             >
               Utils
             </Typography>
-
             <Item
               title="Calendar"
               to="/calendar"
@@ -208,6 +200,32 @@ const Sidebar = () => {
               selected={selected}
               setSelected={setSelected}
             />
+            {/* <Item
+              title="Logout"
+              to="/"
+              icon={<EventNoteOutlinedIcon />}
+              selected={selected}
+              setSelected={setSelected}
+            /> */}
+            {/* <Link
+              to={"/"}
+              onClick={() => {
+                // localStorage.removeItem("accessToken");
+              }}
+            >
+              <Typography
+                variant="h6"
+                color={colors.grey[300]}
+                sx={{
+                  m: "25px 0 5px 20px",
+                  fontWeight: "bold",
+                  fontSize: "20px",
+                }}
+              >
+                Log Out
+              </Typography>
+            </Link> */}
+            ;
           </Box>
         </Menu>
       </ProSidebar>

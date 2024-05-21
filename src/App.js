@@ -1,6 +1,7 @@
 import { CssBaseline, ThemeProvider } from "@mui/material";
 import { useState } from "react";
 import { Route, Routes, useLocation } from "react-router-dom";
+import Changepw from "./scenes/auth/changepw/index.jsx";
 import Signup from "./scenes/auth/signup/Signup.jsx";
 import Bar from "./scenes/bar";
 import Calendar from "./scenes/calendar/calendar";
@@ -26,15 +27,14 @@ import Edit from "./scenes/projects/projects/Edit.jsx";
 import ViewProject from "./scenes/projects/projects/ViewProject.jsx";
 import Project from "./scenes/projects/projects/index.jsx";
 import Team from "./scenes/team";
+import PrivateRoutes from "./scenes/utils/PrivateRoutes.jsx";
 import { ColorModeContext, useMode } from "./theme";
-
 function App() {
   const [theme, colorMode] = useMode();
   const [isSidebar, setIsSidebar] = useState(true);
   const location = useLocation();
-
-  // Check if the current route is the login page
   const isLoginPage = location.pathname === "/";
+
   return (
     <ColorModeContext.Provider value={colorMode}>
       <ThemeProvider theme={theme}>
@@ -44,48 +44,54 @@ function App() {
           <main className="content">
             {!isLoginPage && <Topbar setIsSidebar={setIsSidebar} />}
             <Routes>
-              <Route path="/dd" element={<Dashboard />} />
-              <Route path="/team" element={<Team />} />
-              <Route path="/contacts" element={<Contacts />} />
-
-              <Route path="/form" element={<Form />} />
-              <Route path="/bar" element={<Bar />} />
-              <Route path="/pie" element={<Pie />} />
-              <Route path="/line" element={<Line />} />
-              <Route path="/faq" element={<FAQ />} />
-              <Route path="/calendar" element={<Calendar />} />
-              <Route path="/geography" element={<Geography />} />
-              <Route path="/newproject" element={<AddProject />} />
-              <Route path="/project" element={<Project />} />
-              <Route
-                path="/project/viewproject/:id"
-                element={<ViewProject></ViewProject>}
-              />
-              <Route path="/project/editproject/:id" element={<Edit></Edit>} />
-
-              <Route path="/addclient" element={<AddNewClient />} />
-              <Route path="/client" element={<ClientInformation />} />
-              <Route
-                path="/client/viewclient/:id"
-                element={<ViewClientInformation />}
-              />
-              <Route
-                path="/client/editclient/:id"
-                element={<EditClientInformation />}
-              />
-
-              <Route path="/addemployee" element={<AddNewEmployee />} />
-              <Route path="/employee" element={<Employee />} />
-              <Route
-                path="/employee/viewemployee/:id"
-                element={<ViewEmployee />}
-              />
-              <Route
-                path="/employee/editemployee/:id"
-                element={<EditEmployee />}
-              />
-
               <Route path="/" element={<Signup />} />
+              <Route element={<PrivateRoutes />}>
+                <Route path="/dd" element={<Dashboard />} />
+                <Route path="/team" element={<Team />} />
+                <Route path="/contacts" element={<Contacts />} />
+
+                <Route path="/form" element={<Form />} />
+                <Route path="/bar" element={<Bar />} />
+                <Route path="/pie" element={<Pie />} />
+                <Route path="/line" element={<Line />} />
+                <Route path="/faq" element={<FAQ />} />
+                <Route path="/calendar" element={<Calendar />} />
+                <Route path="/geography" element={<Geography />} />
+                <Route path="/newproject" element={<AddProject />} />
+                <Route path="/project" element={<Project />} />
+                <Route
+                  path="/project/viewproject/:id"
+                  element={<ViewProject></ViewProject>}
+                />
+                <Route
+                  path="/project/editproject/:id"
+                  element={<Edit></Edit>}
+                />
+
+                <Route path="/addclient" element={<AddNewClient />} />
+                <Route path="/client" element={<ClientInformation />} />
+                <Route
+                  path="/client/viewclient/:id"
+                  element={<ViewClientInformation />}
+                />
+                <Route
+                  path="/client/editclient/:id"
+                  element={<EditClientInformation />}
+                />
+
+                <Route path="/addemployee" element={<AddNewEmployee />} />
+                <Route path="/employee" element={<Employee />} />
+                <Route
+                  path="/employee/viewemployee/:id"
+                  element={<ViewEmployee />}
+                />
+                <Route
+                  path="/employee/editemployee/:id"
+                  element={<EditEmployee />}
+                />
+
+                <Route path="/changepw" element={<Changepw />} />
+              </Route>
             </Routes>
           </main>
         </div>

@@ -1,8 +1,7 @@
-import NotificationsOutlinedIcon from "@mui/icons-material/NotificationsOutlined";
-import PersonOutlinedIcon from "@mui/icons-material/PersonOutlined";
-import SettingsOutlinedIcon from "@mui/icons-material/SettingsOutlined";
-import { Box, IconButton, Typography, useTheme } from "@mui/material";
+import { ExitToApp } from "@mui/icons-material";
+import { Box, Button, Typography, alpha, useTheme } from "@mui/material";
 import { useContext } from "react";
+import { Link } from "react-router-dom";
 import { ColorModeContext, tokens } from "../../theme";
 
 const Topbar = ({}) => {
@@ -37,18 +36,25 @@ const Topbar = ({}) => {
         </Typography>
       </Box>
 
-      {/* ICONS */}
-      <Box display="flex">
-        <IconButton>
-          <NotificationsOutlinedIcon />
-        </IconButton>
-        <IconButton>
-          <SettingsOutlinedIcon />
-        </IconButton>
-        <IconButton>
-          <PersonOutlinedIcon />
-        </IconButton>
-      </Box>
+      <Link
+        to={"/"}
+        onClick={() => {
+          localStorage.removeItem("accessToken");
+        }}
+      >
+        <Button
+          color="inherit"
+          startIcon={<ExitToApp />}
+          sx={{
+            fontWeight: "bold",
+            fontSize: "20px",
+            textTransform: "none",
+            color: alpha(colors.grey[300], 0.8),
+          }}
+        >
+          Log Out
+        </Button>
+      </Link>
     </Box>
   );
 };
