@@ -1,18 +1,46 @@
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
-import { Box, useTheme } from "@mui/material";
+import { Box, Typography, useTheme } from "@mui/material";
 import Accordion from "@mui/material/Accordion";
 import AccordionDetails from "@mui/material/AccordionDetails";
 import AccordionSummary from "@mui/material/AccordionSummary";
-import Typography from "@mui/material/Typography";
+import axios from "axios";
+import React, { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import Header from "../../../components/Header";
 import { tokens } from "../../../theme";
 
 const Viewclient = () => {
   const { id } = useParams();
-
   const theme = useTheme();
   const colors = tokens(theme.palette.mode);
+  const [client, setClient] = useState(null);
+  const token = localStorage.getItem("accessToken");
+  useEffect(() => {
+    const fetchClient = async () => {
+      try {
+        const response = await axios.get(
+          "https://hitprojback.hasthiya.org/api/HIT/allClients",
+          {
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+          }
+        );
+        const clientData = response.data.data.find(
+          (client) => client.id === parseInt(id)
+        );
+        setClient(clientData);
+      } catch (error) {
+        console.error("Error fetching client data:", error);
+      }
+    };
+
+    fetchClient();
+  }, [id]);
+
+  if (!client) {
+    return <Typography>Loading...</Typography>;
+  }
 
   return (
     <Box m="20px" height="80vh" overflow="auto" paddingRight="20px">
@@ -28,9 +56,10 @@ const Viewclient = () => {
           </Typography>
         </AccordionSummary>
         <AccordionDetails>
-          <Typography>Client Name: Sample Client Name goes here.</Typography>
+          <Typography>Client Name: {client.name}</Typography>
         </AccordionDetails>
       </Accordion>
+
       <Accordion defaultExpanded>
         <AccordionSummary expandIcon={<ExpandMoreIcon />}>
           <Typography color={colors.greenAccent[500]} variant="h5">
@@ -38,9 +67,7 @@ const Viewclient = () => {
           </Typography>
         </AccordionSummary>
         <AccordionDetails>
-          <Typography>
-            Client Description: Sample Client description goes here.
-          </Typography>
+          <Typography>Client Description: {client.description}</Typography>
         </AccordionDetails>
       </Accordion>
 
@@ -51,9 +78,7 @@ const Viewclient = () => {
           </Typography>
         </AccordionSummary>
         <AccordionDetails>
-          <Typography>
-            Client's Country: Sample Client Country goes here.
-          </Typography>
+          <Typography>Client's Country: {client.country || "N/A"}</Typography>
         </AccordionDetails>
       </Accordion>
 
@@ -64,7 +89,9 @@ const Viewclient = () => {
           </Typography>
         </AccordionSummary>
         <AccordionDetails>
-          <Typography>Added Date: Sample added date goes here.</Typography>
+          <Typography>
+            Added Date: {new Date(client.add_date).toLocaleDateString()}
+          </Typography>
         </AccordionDetails>
       </Accordion>
 
@@ -75,7 +102,15 @@ const Viewclient = () => {
           </Typography>
         </AccordionSummary>
         <AccordionDetails>
-          <Typography>Image: Sample image details goes here.</Typography>
+          {client.imageUrl ? (
+            <img
+              src={client.imageUrl}
+              alt="Company Logo"
+              style={{ width: 200, height: 200 }}
+            />
+          ) : (
+            <Typography>No image available</Typography>
+          )}
         </AccordionDetails>
       </Accordion>
     </Box>

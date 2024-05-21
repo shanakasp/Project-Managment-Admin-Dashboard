@@ -2,6 +2,7 @@ import ImageIcon from "@mui/icons-material/Image";
 import { Box, Button, Snackbar, TextField, useTheme } from "@mui/material";
 import MuiAlert from "@mui/material/Alert";
 import useMediaQuery from "@mui/material/useMediaQuery";
+import axios from "axios";
 import { Formik } from "formik";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
@@ -38,31 +39,28 @@ const Form = () => {
   const handleFormSubmit = (values, { setSubmitting }) => {
     const formData = new FormData();
     formData.append("name", values.name);
-    formData.append("country", values.country);
-    formData.append("description", values.description);
-    formData.append("add_date", values.add_date);
-    formData.append("other", values.other);
+    formData.append("university", values.university);
+    formData.append("earlier_company", values.earlier_company);
     formData.append("image", values.image);
 
-    fetch("https://hitprojback.hasthiya.org/api/HIT/user", {
-      method: "POST",
-      body: formData,
-      headers: {
-        Authorization: `Bearer ${token}`,
-      },
-    })
-      .then((response) => response.json())
-      .then((data) => {
+    axios
+      .post("https://hitprojback.hasthiya.org/api/HIT/user", formData, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      })
+      .then((response) => {
         setSubmitting(false);
-        if (data.success) {
+        if (response.data.success) {
           setAlertMessage("Employee created successfully!");
           setAlertSeverity("success");
           setOpenSnackbar(true);
           setTimeout(() => navigate("/client"), 3000);
         } else {
-          setAlertMessage(data.message || "Something went wrong!");
-          setAlertSeverity("error");
+          setAlertMessage(response.data.message || "Something went wrong!");
+          setAlertSeverity("success");
           setOpenSnackbar(true);
+          setTimeout(() => navigate("/client"), 3000);
         }
       })
       .catch((error) => {
@@ -114,32 +112,28 @@ const Form = () => {
               />
               <TextField
                 fullWidth
-                multiline
                 variant="filled"
-                rows={2}
                 label="Employee University"
                 onBlur={handleBlur}
                 onChange={handleChange}
-                value={values.description}
-                name="description"
-                error={!!touched.description && !!errors.description}
-                helperText={touched.description && errors.description}
+                value={values.university}
+                name="university"
+                error={!!touched.university && !!errors.university}
+                helperText={touched.university && errors.university}
                 sx={{ gridColumn: "span 4" }}
               />
-
               <TextField
                 fullWidth
                 variant="filled"
                 label="Previous Worked Companies"
                 onBlur={handleBlur}
                 onChange={handleChange}
-                value={values.other}
-                name="other"
-                error={!!touched.other && !!errors.other}
-                helperText={touched.other && errors.other}
+                value={values.earlier_company}
+                name="earlier_company"
+                error={!!touched.earlier_company && !!errors.earlier_company}
+                helperText={touched.earlier_company && errors.earlier_company}
                 sx={{ gridColumn: "span 4" }}
               />
-
               <Box sx={{ gridColumn: "span 2" }}>
                 <label htmlFor="image-upload">
                   <input
@@ -207,15 +201,17 @@ const Form = () => {
 
 const checkoutSchema = yup.object().shape({
   name: yup.string().required("Name of the Employee is required"),
-  description: yup.string().required("Employee University is required"),
-  other: yup.string().required("Previous Worked Companies is required"),
+  university: yup.string().required("Employee University is required"),
+  earlier_company: yup
+    .string()
+    .required("Previous Worked Companies is required"),
   image: yup.mixed().required("Image is required"),
 });
 
 const initialValues = {
   name: "",
-  description: "",
-  other: "",
+  university: "",
+  earlier_company: "",
   image: null,
 };
 

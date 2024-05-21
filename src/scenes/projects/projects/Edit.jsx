@@ -298,7 +298,7 @@ const checkoutSchema = yup.object().shape({
   start_date: yup.date().required("Start date is required"),
   end_date: yup.date().required("End date is required"),
   status: yup.string().required("Status is required"),
-  image: yup.mixed().notRequired(), // image is not required for update
+  image: yup.mixed().notRequired(),
 });
 
 export default Form;
