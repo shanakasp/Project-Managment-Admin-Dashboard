@@ -31,12 +31,10 @@ export default function SignInSide() {
       password: data.get("password"),
     };
 
-    // Reset any previous errors
     setError("");
     setEmailError("");
     setPasswordError("");
 
-    // Validate email and password
     if (!formData.email) {
       setEmailError("Email is required");
     }
@@ -76,7 +74,6 @@ export default function SignInSide() {
   };
 
   const handleChange = (event) => {
-    // Clear validation errors when user starts entering data
     setEmailError("");
     setPasswordError("");
   };
@@ -99,7 +96,7 @@ export default function SignInSide() {
           sm={4}
           md={7}
           sx={{
-            position: "relative", // Ensure relative positioning
+            position: "relative",
             backgroundImage:
               "url(https://source.unsplash.com/random?wallpapers)",
             backgroundRepeat: "no-repeat",
@@ -125,8 +122,15 @@ export default function SignInSide() {
             <Avatar sx={{ m: 1, bgcolor: "secondary.main" }}>
               <LockOutlinedIcon />
             </Avatar>
-            <Typography component="h1" variant="h5">
+            <Typography
+              component="h1"
+              variant="h5"
+              sx={{ mb: 5, fontWeight: "bold" }}
+            >
               Sign in
+            </Typography>
+            <Typography component="h1" sx={{ fontSize: "1rem" }}>
+              Hasthiya Admin Dashboard
             </Typography>
             <Box
               component="form"
@@ -188,6 +192,33 @@ export default function SignInSide() {
                   {error}
                 </Typography>
               )}
+            </Box>
+            <Box
+              position="fixed"
+              bottom="20px"
+              right="20px"
+              display="flex"
+              alignItems="center"
+            >
+              <Box> Hasthiya @ 2024</Box>
+              <Box
+                ml={1}
+                display="flex"
+                justifyContent="center"
+                alignItems="center"
+                width="50px"
+                height="50px"
+                borderRadius="20%"
+                bgcolor="rgba(255, 255, 255, 0.5)"
+              >
+                <img
+                  alt="profile-user"
+                  width="50px"
+                  height="50px"
+                  src={`../../assets/user.png`}
+                  style={{ cursor: "pointer" }}
+                />
+              </Box>
             </Box>
           </Box>
         </Grid>

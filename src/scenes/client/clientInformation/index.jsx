@@ -125,6 +125,7 @@ const FormsUser = () => {
     { field: "country", headerName: "Country", flex: 1 },
 
     {
+      field: "Actions",
       headerName: "Actions",
       flex: 0.7,
       renderCell: (params) => (

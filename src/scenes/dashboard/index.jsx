@@ -1,4 +1,4 @@
-import DownloadOutlinedIcon from "@mui/icons-material/DownloadOutlined";
+import DownloadOutlinedIcon from "@mui/icons-material/LockOutlined";
 import { Box, Button, useTheme } from "@mui/material";
 import { Link } from "react-router-dom";
 import Header from "../../components/Header";
@@ -17,9 +17,10 @@ const Dashboard = () => {
             {" "}
             <Button
               sx={{
-                backgroundColor: colors.blueAccent[700],
+                backgroundColor: colors.greenAccent[500],
                 color: colors.grey[100],
                 fontSize: "14px",
+
                 fontWeight: "bold",
                 padding: "10px 20px",
               }}
