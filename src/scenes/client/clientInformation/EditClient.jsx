@@ -142,7 +142,10 @@ const Form = () => {
 
   return (
     <Box m="20px" height="80vh" overflow="auto" paddingRight="20px">
-      <Header title="EDIT CLIENT" subtitle="Edit Client Details" />
+      <Header
+        title={`EDIT CLIENT ID ${id}`}
+        subtitle="Edit Each Client Details"
+      />
 
       <Formik
         onSubmit={handleFormSubmit}
