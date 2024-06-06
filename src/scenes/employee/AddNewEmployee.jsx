@@ -151,7 +151,7 @@ const Form = () => {
                     color="secondary"
                     startIcon={<ImageIcon />}
                   >
-                    Change Employee Image
+                    Add Employee Image
                   </Button>
                 </label>
               </Box>

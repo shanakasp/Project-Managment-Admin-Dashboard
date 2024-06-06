@@ -11,7 +11,7 @@ import MuiAlert from "@mui/material/Alert";
 import useMediaQuery from "@mui/material/useMediaQuery";
 import axios from "axios";
 import { Formik } from "formik";
-import { useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import * as yup from "yup";
 import Header from "../../../components/Header";
@@ -50,6 +50,7 @@ const EditClient = () => {
           setEmployeeData(employee);
           setSelectedStartDate(new Date(employee.startDate));
           setSelectedEndDate(new Date(employee.endDate));
+          setPreviewImage(employee.imageUrl); // Set the initial preview image
         } else {
           console.error("Employee not found");
         }
@@ -59,7 +60,7 @@ const EditClient = () => {
     };
 
     fetchEmployeeDetails();
-  }, [id]);
+  }, [id, token]);
 
   const handleImageChange = (event, setFieldValue) => {
     const file = event.currentTarget.files[0];
@@ -87,7 +88,7 @@ const EditClient = () => {
 
     try {
       const response = await axios.put(
-        `http://hitprojback.hasthiya.org/api/HIT/client/${id}`,
+        `https://hitprojback.hasthiya.org/api/HIT/updateUserById/${id}`,
         formData,
         {
           headers: {
@@ -212,7 +213,7 @@ const EditClient = () => {
                   <img
                     src={previewImage}
                     alt="Preview"
-                    style={{ width: 200, height: 200, marginLeft: "-95%" }}
+                    style={{ width: 200, height: 200, gridColumn: "span 4" }}
                   />
                 )}
               </Box>
