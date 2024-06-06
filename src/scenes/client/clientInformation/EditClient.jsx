@@ -3,6 +3,7 @@ import {
   AlertTitle,
   Box,
   Button,
+  CircularProgress,
   MenuItem,
   Select,
   Snackbar,
@@ -91,7 +92,7 @@ const Form = () => {
     }
   };
 
-  const handleFormSubmit = async (values, { resetForm }) => {
+  const handleFormSubmit = async (values, { resetForm, setSubmitting }) => {
     try {
       const formData = new FormData();
       formData.append("name", values.name);
@@ -137,6 +138,8 @@ const Form = () => {
       setAlertSeverity("error");
       setAlertMessage("Failed to update client: " + error.message);
       setOpenSnackbar(true);
+    } finally {
+      setSubmitting(false);
     }
   };
 
@@ -161,6 +164,7 @@ const Form = () => {
           handleChange,
           handleSubmit,
           setFieldValue,
+          isSubmitting,
         }) => (
           <form onSubmit={handleSubmit}>
             <Box
@@ -214,7 +218,7 @@ const Form = () => {
               <TextField
                 fullWidth
                 variant="filled"
-                label="Other"
+                label="Other Details"
                 onBlur={handleBlur}
                 onChange={handleChange}
                 value={values.other}
@@ -224,6 +228,7 @@ const Form = () => {
               <Box>
                 <Typography>Country</Typography>
                 <Select
+                  fullWidth
                   value={values.country}
                   onChange={handleChange}
                   onBlur={handleBlur}
@@ -242,7 +247,7 @@ const Form = () => {
                   ))}
                 </Select>
               </Box>
-              <Box sx={{ gridColumn: "span 2", marginLeft: "54%" }}>
+              <Box sx={{ gridColumn: "span 4", mt: 2 }}>
                 <label htmlFor="image-upload">
                   <input
                     id="image-upload"
@@ -267,7 +272,7 @@ const Form = () => {
                 <img
                   src={previewImage}
                   alt="Preview"
-                  style={{ width: 100, height: 100 }}
+                  style={{ width: 200, height: 200 }}
                 />
               )}
             </Box>
@@ -277,14 +282,17 @@ const Form = () => {
                 color="secondary"
                 variant="contained"
                 size="large"
+                disabled={isSubmitting}
+                startIcon={isSubmitting ? <CircularProgress size={20} /> : null}
               >
-                <strong>Update Client</strong>
+                <strong>
+                  {isSubmitting ? "Updating..." : "Update Client"}
+                </strong>
               </Button>
             </Box>
           </form>
         )}
       </Formik>
-
       <Snackbar
         open={openSnackbar}
         autoHideDuration={5000}

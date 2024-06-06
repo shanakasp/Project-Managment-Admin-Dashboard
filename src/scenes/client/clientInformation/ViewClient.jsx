@@ -56,7 +56,7 @@ const Viewclient = () => {
           </Typography>
         </AccordionSummary>
         <AccordionDetails>
-          <Typography>Client Name: {client.name}</Typography>
+          <Typography>{client.name}</Typography>
         </AccordionDetails>
       </Accordion>
 
@@ -67,7 +67,7 @@ const Viewclient = () => {
           </Typography>
         </AccordionSummary>
         <AccordionDetails>
-          <Typography>Client Description: {client.description}</Typography>
+          <Typography>{client.description}</Typography>
         </AccordionDetails>
       </Accordion>
 
@@ -78,19 +78,19 @@ const Viewclient = () => {
           </Typography>
         </AccordionSummary>
         <AccordionDetails>
-          <Typography>Client's Country: {client.country || "N/A"}</Typography>
+          <Typography>{client.country || "N/A"}</Typography>
         </AccordionDetails>
       </Accordion>
 
       <Accordion defaultExpanded>
         <AccordionSummary expandIcon={<ExpandMoreIcon />}>
           <Typography color={colors.greenAccent[500]} variant="h5">
-            Added Date
+            Added Date (MM / DD/ YYYY)
           </Typography>
         </AccordionSummary>
         <AccordionDetails>
           <Typography>
-            Added Date: {new Date(client.add_date).toLocaleDateString()}
+            {new Date(client.add_date).toLocaleDateString()}
           </Typography>
         </AccordionDetails>
       </Accordion>

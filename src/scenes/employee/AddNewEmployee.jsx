@@ -1,5 +1,12 @@
 import ImageIcon from "@mui/icons-material/Image";
-import { Box, Button, Snackbar, TextField, useTheme } from "@mui/material";
+import {
+  Box,
+  Button,
+  CircularProgress,
+  Snackbar,
+  TextField,
+  useTheme,
+} from "@mui/material";
 import MuiAlert from "@mui/material/Alert";
 import useMediaQuery from "@mui/material/useMediaQuery";
 import axios from "axios";
@@ -170,8 +177,11 @@ const Form = () => {
                 variant="contained"
                 size="large"
                 disabled={isSubmitting}
+                startIcon={isSubmitting ? <CircularProgress size={20} /> : null}
               >
-                <strong>Create New Employee</strong>
+                <strong>
+                  {isSubmitting ? "Creating..." : "Create New Employee"}
+                </strong>
               </Button>
             </Box>
           </form>

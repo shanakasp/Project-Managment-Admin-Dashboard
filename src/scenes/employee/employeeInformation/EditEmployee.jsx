@@ -2,6 +2,7 @@ import ImageIcon from "@mui/icons-material/Image";
 import {
   Box,
   Button,
+  CircularProgress,
   Snackbar,
   TextField,
   Typography,
@@ -17,7 +18,7 @@ import * as yup from "yup";
 import Header from "../../../components/Header";
 import { tokens } from "../../../theme";
 
-const EditClient = () => {
+const EditEmployee = () => {
   const { id } = useParams();
   const theme = useTheme();
   const navigate = useNavigate();
@@ -31,6 +32,7 @@ const EditClient = () => {
   const [openSnackbar, setOpenSnackbar] = useState(false);
   const [alertMessage, setAlertMessage] = useState("");
   const [alertSeverity, setAlertSeverity] = useState("success");
+  const [loading, setLoading] = useState(false); // New loading state
 
   useEffect(() => {
     const fetchEmployeeDetails = async () => {
@@ -50,7 +52,7 @@ const EditClient = () => {
           setEmployeeData(employee);
           setSelectedStartDate(new Date(employee.startDate));
           setSelectedEndDate(new Date(employee.endDate));
-          setPreviewImage(employee.imageUrl); // Set the initial preview image
+          setPreviewImage(employee.imageUrl);
         } else {
           console.error("Employee not found");
         }
@@ -78,7 +80,7 @@ const EditClient = () => {
   };
 
   const handleFormSubmit = async (values) => {
-    console.log(values);
+    setLoading(true);
 
     const formData = new FormData();
     formData.append("name", values.name);
@@ -106,6 +108,8 @@ const EditClient = () => {
       setAlertMessage("An error occurred while updating the employee.");
       setAlertSeverity("error");
       setOpenSnackbar(true);
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -218,8 +222,17 @@ const EditClient = () => {
                 )}
               </Box>
               <Box display="flex" justifyContent="end" mt="20px">
-                <Button type="submit" color="secondary" variant="contained">
-                  Update Employee Details
+                <Button
+                  type="submit"
+                  color="secondary"
+                  variant="contained"
+                  disabled={loading}
+                  startIcon={loading ? <CircularProgress size={20} /> : null}
+                >
+                  {" "}
+                  <strong>
+                    {loading ? "Updating..." : "Update Employee Details"}
+                  </strong>
                 </Button>
               </Box>
             </form>
@@ -251,7 +264,6 @@ const EditClient = () => {
 const checkoutSchema = yup.object().shape({
   name: yup.string().required("Name of the employee is required"),
   university: yup.string().required("Employee Learned University is required"),
-  // other: yup.string().required("Other is required"),
 });
 
-export default EditClient;
+export default EditEmployee;

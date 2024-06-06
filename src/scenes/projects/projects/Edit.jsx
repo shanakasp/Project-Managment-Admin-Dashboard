@@ -3,6 +3,7 @@ import {
   Alert,
   Box,
   Button,
+  CircularProgress,
   MenuItem,
   Snackbar,
   TextField,
@@ -149,6 +150,7 @@ const Form = () => {
           touched,
           handleBlur,
           handleChange,
+          isSubmitting,
           handleSubmit,
           setFieldValue,
         }) => (
@@ -265,8 +267,10 @@ const Form = () => {
                 color="secondary"
                 variant="contained"
                 size="large"
+                disabled={isSubmitting}
+                startIcon={isSubmitting ? <CircularProgress size={20} /> : null}
               >
-                <strong>Update Project</strong>
+                <strong>Create New Project</strong>
               </Button>
             </Box>
           </form>
