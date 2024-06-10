@@ -3,6 +3,7 @@ import {
   Alert,
   Box,
   Button,
+  CircularProgress,
   MenuItem,
   Snackbar,
   TextField,
@@ -120,6 +121,7 @@ const Form = () => {
           handleBlur,
           handleChange,
           handleSubmit,
+          isSubmitting,
           setFieldValue,
         }) => (
           <form onSubmit={handleSubmit}>
@@ -203,31 +205,35 @@ const Form = () => {
                 <MenuItem value="In Progress">In Progress</MenuItem>
                 <MenuItem value="Completed">Completed</MenuItem>
               </TextField>
-              <label htmlFor="image-upload">
-                <input
-                  id="image-upload"
-                  type="file"
-                  accept="image/*"
-                  onChange={(event) => handleImageChange(event, setFieldValue)}
-                  style={{ display: "none" }}
-                />
-                <Button
-                  variant="contained"
-                  component="span"
-                  color="secondary"
-                  startIcon={<ImageIcon />}
-                >
-                  Select Image
-                </Button>
-              </label>
+              <Box sx={{ gridColumn: "span 2" }}>
+                <label htmlFor="image-upload">
+                  <input
+                    id="image-upload"
+                    type="file"
+                    accept="image/*"
+                    onChange={(event) =>
+                      handleImageChange(event, setFieldValue)
+                    }
+                    style={{ display: "none" }}
+                  />
+                  <Button
+                    variant="contained"
+                    component="span"
+                    color="secondary"
+                    startIcon={<ImageIcon />}
+                  >
+                    Select Project Image
+                  </Button>
+                </label>
 
-              {previewImage && (
-                <img
-                  src={previewImage}
-                  alt="Preview"
-                  style={{ width: 200, height: 200, gridColumn: "span 4" }}
-                />
-              )}
+                {previewImage && (
+                  <img
+                    src={previewImage}
+                    alt="Preview"
+                    style={{ width: 200, height: 200, gridColumn: "span 4" }}
+                  />
+                )}
+              </Box>
             </Box>
             <Box display="flex" justifyContent="end" mt="20px">
               <Button
@@ -235,6 +241,8 @@ const Form = () => {
                 color="secondary"
                 variant="contained"
                 size="large"
+                disabled={isSubmitting}
+                startIcon={isSubmitting ? <CircularProgress size={20} /> : null}
               >
                 <strong>Create New Project</strong>
               </Button>

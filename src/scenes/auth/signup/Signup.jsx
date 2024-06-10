@@ -1,5 +1,7 @@
 import { Visibility, VisibilityOff } from "@mui/icons-material";
 import LockOutlinedIcon from "@mui/icons-material/LockOutlined";
+import { Snackbar } from "@mui/material";
+import MuiAlert from "@mui/material/Alert";
 import Avatar from "@mui/material/Avatar";
 import Box from "@mui/material/Box";
 import Button from "@mui/material/Button";
@@ -13,7 +15,6 @@ import Typography from "@mui/material/Typography";
 import { ThemeProvider, createTheme } from "@mui/material/styles";
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
-
 const defaultTheme = createTheme();
 
 export default function SignInSide() {
@@ -22,6 +23,9 @@ export default function SignInSide() {
   const [emailError, setEmailError] = useState("");
   const [passwordError, setPasswordError] = useState("");
   const [showPassword, setShowPassword] = useState(false);
+  const [snackbarOpen, setSnackbarOpen] = useState(false);
+  const [snackbarSeverity, setSnackbarSeverity] = useState("success");
+  const [snackbarMessage, setSnackbarMessage] = useState("");
 
   const handleSubmit = async (event) => {
     event.preventDefault();
@@ -61,7 +65,13 @@ export default function SignInSide() {
 
           localStorage.setItem("accessToken", token);
 
-          navigate("/dd");
+          setSnackbarMessage("Login successful!");
+          setSnackbarSeverity("success");
+          setSnackbarOpen(true);
+
+          setTimeout(() => {
+            navigate("/dd");
+          }, 2000);
         } else {
           const errorData = await response.json();
           setError(errorData.message || "Login failed");
@@ -84,6 +94,10 @@ export default function SignInSide() {
 
   const handleMouseDownPassword = (event) => {
     event.preventDefault();
+  };
+
+  const handleSnackbarClose = () => {
+    setSnackbarOpen(false);
   };
 
   return (
@@ -223,6 +237,23 @@ export default function SignInSide() {
           </Box>
         </Grid>
       </Grid>
+
+      <Snackbar
+        open={snackbarOpen}
+        autoHideDuration={2000}
+        onClose={handleSnackbarClose}
+        anchorOrigin={{ vertical: "top", horizontal: "right" }}
+        sx={{ borderRadius: 10 }}
+      >
+        <MuiAlert
+          onClose={handleSnackbarClose}
+          severity={snackbarSeverity}
+          variant="filled"
+          sx={{ width: "100%" }}
+        >
+          {snackbarMessage}
+        </MuiAlert>
+      </Snackbar>
     </ThemeProvider>
   );
 }
